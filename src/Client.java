@@ -9,6 +9,9 @@ public class Client {
     private BufferedWriter bufferedWriter;
     private String username;
 
+    private int EnemyPosX=200;
+    private int EnemyPosY=300;
+
     public Client(Socket socket, String username){
         try{
             this.socket = socket;
@@ -42,12 +45,12 @@ public class Client {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                String msgFromGroupChat;
+                int msgFromGroupChat;
 
                 while (socket.isConnected()){
                     try{
-                        msgFromGroupChat = bufferedReader.readLine();
-                        System.out.println(msgFromGroupChat);
+                        msgFromGroupChat = Integer.parseInt( bufferedReader.readLine());
+                        System.out.println(msgFromGroupChat+3);
                     }catch (IOException e){
                         closeEverything(socket, bufferedReader, bufferedWriter);
                     }
