@@ -23,11 +23,11 @@ public class ClientHandler implements Runnable{
 
     @Override
     public void run(){
-        int messageFromClient;
+        String messageFromClient;
 
         while(socket.isConnected()){
             try{
-                messageFromClient = Integer.parseInt(bufferedReader.readLine());
+                messageFromClient = bufferedReader.readLine();
                 broadcastMessage(messageFromClient);
             }catch (IOException e){
                 closeEverything(socket, bufferedReader, bufferedWriter);
@@ -36,7 +36,7 @@ public class ClientHandler implements Runnable{
         }
     }
 
-    public void broadcastMessage(int messageToSend){
+    public void broadcastMessage(String messageToSend){
         for(ClientHandler clientHandler : clientHandlers){
             try{
                 if(!clientHandler.equals(this)){

@@ -1,10 +1,14 @@
+import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
+import java.awt.*;
 import java.io.*;
 import java.net.Socket;
 import java.util.Scanner;
 
-public class Client implements KeyListener {
+public class Client extends JPanel implements ActionListener{
 
     private Socket socket;
     private BufferedReader bufferedReader;
@@ -52,6 +56,7 @@ public class Client implements KeyListener {
                     try{
                         enemyPosX = Integer.parseInt( bufferedReader.readLine());
                         enemyPosY = Integer.parseInt( bufferedReader.readLine());
+                        System.out.println(enemyPosX);
                     }catch (IOException e){
                         closeEverything(socket, bufferedReader, bufferedWriter);
                     }
@@ -75,36 +80,48 @@ public class Client implements KeyListener {
     }
 
     public static void main(String[] args) throws IOException {
-        Scanner sc = new Scanner(System.in);
-        Socket socket = new Socket("192.168.208.172", 2834);
+        Socket socket = new Socket("172.20.10.2", 2834);
         Client client = new Client(socket);
+        client.getKeyStrokes();
         client.listenForMessage();
         client.sendMessage();
+
     }
 
     public void keyTyped(KeyEvent e) {
 
     }
 
-    public void keyPressed(KeyEvent e) {
+    public void getKeyStrokes() {
+        addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
 
-        int key = e.getKeyCode();
+                int key = e.getKeyCode();
 
-        if (key == KeyEvent.VK_LEFT) {
-            selfPosX -= 1;
-        }
+                if (key == KeyEvent.VK_LEFT) {
+                    selfPosX -= 1;
+                    System.out.println("worked");
+                }
 
-        if (key == KeyEvent.VK_RIGHT) {
-            selfPosX += 1;
-        }
+                if (key == KeyEvent.VK_RIGHT) {
+                    selfPosX += 1;
+                }
 
-        if (key == KeyEvent.VK_UP) {
-            selfPosY += 1;
-        }
+                if (key == KeyEvent.VK_UP) {
+                    selfPosY += 1;
+                }
+            }
+        });
 
     }
 
     public void keyReleased(KeyEvent e) {
+
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
 
     }
 }
