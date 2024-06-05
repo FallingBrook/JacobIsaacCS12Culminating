@@ -1,46 +1,40 @@
-import javax.swing.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
-import java.awt.*;
 import java.io.*;
 import java.net.Socket;
 import java.util.Scanner;
 
-public class Client extends JPanel implements ActionListener{
+public class Client {
 
     private Socket socket;
     private BufferedReader bufferedReader;
     private BufferedWriter bufferedWriter;
+    private String username;
 
-    private int enemyPosX=200;
-    private int enemyPosY=300;
+    private int EnemyPosX=200;
+    private int EnemyPosY=300;
 
-    private int selfPosX=100;
-
-    private int selfPosY = 300;
-
-    public Client(Socket socket){
+    public Client(Socket socket, String username){
         try{
             this.socket = socket;
             this.bufferedWriter = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
             this.bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            this.username = username;
         }catch (IOException e){
             closeEverything(socket, bufferedReader, bufferedWriter);
         }
     }
     public void sendMessage(){
         try{
+            bufferedWriter.write(username);
+            bufferedWriter.newLine();
+            bufferedWriter.flush();
 
-
+            Scanner sc= new Scanner(System.in);
             while (socket.isConnected()){
-                bufferedWriter.write(selfPosX);
-                bufferedWriter.newLine();
-                bufferedWriter.write(selfPosY);
+                String messageToSend = sc.nextLine();
+
+                bufferedWriter.write(username + ": " + messageToSend);
                 bufferedWriter.newLine();
                 bufferedWriter.flush();
-
             }
         }catch (IOException e){
             closeEverything(socket, bufferedReader, bufferedWriter);
@@ -51,12 +45,12 @@ public class Client extends JPanel implements ActionListener{
         new Thread(new Runnable() {
             @Override
             public void run() {
+                int msgFromGroupChat;
 
                 while (socket.isConnected()){
                     try{
-                        enemyPosX = Integer.parseInt( bufferedReader.readLine());
-                        enemyPosY = Integer.parseInt( bufferedReader.readLine());
-                        System.out.println(enemyPosX);
+                        msgFromGroupChat = Integer.parseInt( bufferedReader.readLine());
+                        System.out.println(msgFromGroupChat+3);
                     }catch (IOException e){
                         closeEverything(socket, bufferedReader, bufferedWriter);
                     }
@@ -80,48 +74,12 @@ public class Client extends JPanel implements ActionListener{
     }
 
     public static void main(String[] args) throws IOException {
-        Socket socket = new Socket("172.20.10.2", 2834);
-        Client client = new Client(socket);
-        client.getKeyStrokes();
+        Scanner sc = new Scanner(System.in);
+        System.out.println("Enter your username for the group chat: ");
+        String username = sc.nextLine();
+        Socket socket = new Socket("10.0.0.59", 2834);
+        Client client = new Client(socket, username);
         client.listenForMessage();
         client.sendMessage();
-
-    }
-
-    public void keyTyped(KeyEvent e) {
-
-    }
-
-    public void getKeyStrokes() {
-        addKeyListener(new KeyAdapter() {
-            @Override
-            public void keyPressed(KeyEvent e) {
-
-                int key = e.getKeyCode();
-
-                if (key == KeyEvent.VK_LEFT) {
-                    selfPosX -= 1;
-                    System.out.println("worked");
-                }
-
-                if (key == KeyEvent.VK_RIGHT) {
-                    selfPosX += 1;
-                }
-
-                if (key == KeyEvent.VK_UP) {
-                    selfPosY += 1;
-                }
-            }
-        });
-
-    }
-
-    public void keyReleased(KeyEvent e) {
-
-    }
-
-    @Override
-    public void actionPerformed(ActionEvent e) {
-
     }
 }
