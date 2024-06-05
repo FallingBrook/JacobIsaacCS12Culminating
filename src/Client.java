@@ -27,7 +27,7 @@ public class Client {
                 frame.setVisible(true);
                 frame.pack();
                 game.startGame();
-//                System.out.println(Thread.currentThread());
+
             }
         }).start();
         new Thread(new Runnable() {
@@ -35,11 +35,10 @@ public class Client {
             public void run() {
                 Socket socket = null;
                 try {
-                    socket = new Socket("10.0.0.59", 2834);
+                    socket = new Socket("10.88.111.8", 2834);
                     Client client = new Client(socket);
                     client.listenForMessage();
                     client.sendMessage();
-                    System.out.println(Thread.currentThread());
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
@@ -58,16 +57,12 @@ public class Client {
 
     public void sendMessage(){
         try{
-            System.out.println(Thread.currentThread());
-            bufferedWriter.write("username");
-            bufferedWriter.newLine();
-            bufferedWriter.flush();
 
             Scanner sc= new Scanner(System.in);
             while (socket.isConnected()){
                 String messageToSend = sc.nextLine();
 
-                bufferedWriter.write("username" + ": " + messageToSend);
+                bufferedWriter.write(messageToSend);
                 bufferedWriter.newLine();
                 bufferedWriter.flush();
             }
@@ -84,10 +79,8 @@ public class Client {
 
                 while (socket.isConnected()){
                     try{
-                        System.out.println(Thread.currentThread());
                         msgFromGroupChat = bufferedReader.readLine();
-                        System.out.println(msgFromGroupChat);
-                        System.out.println("asd");
+                        System.out.println("recieved: " + msgFromGroupChat);
                     }catch (IOException e){
                         closeEverything(socket, bufferedReader, bufferedWriter);
                     }

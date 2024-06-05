@@ -26,8 +26,8 @@ public class SnakeGame extends JPanel implements ActionListener {
         addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
-                if(e.getKeyCode() == KeyEvent.VK_SPACE)
-                    System.out.println("space pressed");
+                if(e.getKeyCode() == KeyEvent.VK_LEFT)
+                    System.out.println("left pressed");
             }
         });
 
