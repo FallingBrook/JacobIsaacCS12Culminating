@@ -1,3 +1,4 @@
+import javax.swing.*;
 import java.io.*;
 import java.net.Socket;
 import java.util.Scanner;
@@ -7,24 +8,58 @@ public class Client {
     private Socket socket;
     private BufferedReader bufferedReader;
     private BufferedWriter bufferedWriter;
-    private String username;
+    private static final int FRAME_RATE = 20;
 
-    private int EnemyPosX=200;
-    private int EnemyPosY=300;
+    private static final int WIDTH = 800;
+    private static final int HEIGHT = 600;
 
-    public Client(Socket socket, String username){
+    public static void main(String[] args) throws IOException {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                final JFrame frame = new JFrame("Snake Game");
+                frame.setSize(WIDTH, HEIGHT);
+                SnakeGame game = new SnakeGame(WIDTH, HEIGHT);
+                frame.add(game);
+                frame.setLocationRelativeTo(null);
+                frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                frame.setResizable(false);
+                frame.setVisible(true);
+                frame.pack();
+                game.startGame();
+//                System.out.println(Thread.currentThread());
+            }
+        }).start();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Socket socket = null;
+                try {
+                    socket = new Socket("10.0.0.59", 2834);
+                    Client client = new Client(socket);
+                    client.listenForMessage();
+                    client.sendMessage();
+                    System.out.println(Thread.currentThread());
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }).start();
+    }
+    public Client(Socket socket){
         try{
             this.socket = socket;
             this.bufferedWriter = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
             this.bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            this.username = username;
         }catch (IOException e){
             closeEverything(socket, bufferedReader, bufferedWriter);
         }
     }
+
     public void sendMessage(){
         try{
-            bufferedWriter.write(username);
+            System.out.println(Thread.currentThread());
+            bufferedWriter.write("username");
             bufferedWriter.newLine();
             bufferedWriter.flush();
 
@@ -32,7 +67,7 @@ public class Client {
             while (socket.isConnected()){
                 String messageToSend = sc.nextLine();
 
-                bufferedWriter.write(username + ": " + messageToSend);
+                bufferedWriter.write("username" + ": " + messageToSend);
                 bufferedWriter.newLine();
                 bufferedWriter.flush();
             }
@@ -45,12 +80,14 @@ public class Client {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                int msgFromGroupChat;
+                String msgFromGroupChat;
 
                 while (socket.isConnected()){
                     try{
-                        msgFromGroupChat = Integer.parseInt( bufferedReader.readLine());
-                        System.out.println(msgFromGroupChat+3);
+                        System.out.println(Thread.currentThread());
+                        msgFromGroupChat = bufferedReader.readLine();
+                        System.out.println(msgFromGroupChat);
+                        System.out.println("asd");
                     }catch (IOException e){
                         closeEverything(socket, bufferedReader, bufferedWriter);
                     }
@@ -71,15 +108,5 @@ public class Client {
         }catch (IOException e){
             e.printStackTrace();
         }
-    }
-
-    public static void main(String[] args) throws IOException {
-        Scanner sc = new Scanner(System.in);
-        System.out.println("Enter your username for the group chat: ");
-        String username = sc.nextLine();
-        Socket socket = new Socket("10.0.0.59", 2834);
-        Client client = new Client(socket, username);
-        client.listenForMessage();
-        client.sendMessage();
     }
 }
