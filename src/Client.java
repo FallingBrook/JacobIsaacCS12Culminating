@@ -11,6 +11,8 @@ public class Client {
 
     private Sprite player;
 
+    private Sprite enemy;
+
     private SnakeGame game;
 
     private static final int FRAME_RATE = 20;
@@ -26,7 +28,8 @@ public class Client {
             frame.setSize(WIDTH, HEIGHT);
             Client client = new Client(new Socket("10.88.111.8", 2834));
             client.player=new Sprite(100,200);
-            client.game=new SnakeGame(WIDTH, HEIGHT, client.player);
+            client.enemy = new Sprite(100,200);
+            client.game=new SnakeGame(WIDTH, HEIGHT, client.player,client.enemy);
             frame.add(client.game);
             frame.setLocationRelativeTo(null);
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -34,8 +37,8 @@ public class Client {
             frame.setVisible(true);
             frame.pack();
             client.game.startGame();
-            client.listenForMessage();
-            client.sendMessage();
+            client.listenForMessage(client);
+            client.sendMessage(client);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -54,14 +57,14 @@ public class Client {
         }
     }
 
-    public void sendMessage(){
+    public void sendMessage(Client client){
         try{
 
-            Scanner sc= new Scanner(System.in);
             while (socket.isConnected()){
-                String messageToSend = sc.nextLine();
 
-                bufferedWriter.write(messageToSend);
+
+
+                bufferedWriter.write(String.valueOf(client.player.getPosX()));
                 bufferedWriter.newLine();
                 bufferedWriter.flush();
             }
@@ -70,16 +73,14 @@ public class Client {
         }
     }
 
-    public void listenForMessage(){
+    public void listenForMessage(Client client){
         new Thread(new Runnable() {
             @Override
             public void run() {
-                String msgFromGroupChat;
 
                 while (socket.isConnected()){
                     try{
-                        msgFromGroupChat = bufferedReader.readLine();
-                        System.out.println("recieved: " + msgFromGroupChat);
+                        client.enemy.setPosX(Integer.parseInt(bufferedReader.readLine()));
                     }catch (IOException e){
                         closeEverything(socket, bufferedReader, bufferedWriter);
                     }

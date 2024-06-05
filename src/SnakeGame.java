@@ -13,17 +13,21 @@ public class SnakeGame extends JPanel implements ActionListener {
     private final int height;
     private static final int FRAME_RATE = 20;
 
-    private Sprite player1;
+    private Sprite player1 = new Sprite(50,50);
+
+    private Sprite enemy1 = new Sprite(50,50);
 
 
 
-    public SnakeGame(final int width, final int height, Sprite player) {
+
+    public SnakeGame(final int width, final int height, Sprite player, Sprite enemy) {
         super();
         this.width = width;
         this.height = height;
         setPreferredSize(new Dimension(width, height));
         setBackground(Color.BLACK);
         player1=player;
+        enemy1=enemy;
 
     }
 
@@ -68,6 +72,8 @@ public class SnakeGame extends JPanel implements ActionListener {
         }
         graphics.setColor(Color.MAGENTA);
         graphics.fillRect(player1.getPosX(), player1.getPosY(),100,100);
+        graphics.setColor(Color.RED);
+        graphics.fillRect(enemy1.getPosX(), enemy1.getPosY(),100,100);
 
     }
 

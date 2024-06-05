@@ -26,6 +26,10 @@ public class Sprite {
         posY+=y;
     }
 
+    public void setPosX (int x){
+        posX = x;
+    }
+
 
 
 }
