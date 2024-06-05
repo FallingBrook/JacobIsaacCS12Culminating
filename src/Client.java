@@ -8,43 +8,42 @@ public class Client {
     private Socket socket;
     private BufferedReader bufferedReader;
     private BufferedWriter bufferedWriter;
+
+    private Sprite player;
+
+    private SnakeGame game;
+
     private static final int FRAME_RATE = 20;
 
     private static final int WIDTH = 800;
     private static final int HEIGHT = 600;
 
     public static void main(String[] args) throws IOException {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                final JFrame frame = new JFrame("Snake Game");
-                frame.setSize(WIDTH, HEIGHT);
-                SnakeGame game = new SnakeGame(WIDTH, HEIGHT);
-                frame.add(game);
-                frame.setLocationRelativeTo(null);
-                frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-                frame.setResizable(false);
-                frame.setVisible(true);
-                frame.pack();
-                game.startGame();
 
-            }
-        }).start();
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                Socket socket = null;
-                try {
-                    socket = new Socket("10.88.111.8", 2834);
-                    Client client = new Client(socket);
-                    client.listenForMessage();
-                    client.sendMessage();
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-        }).start();
+        try {
+
+            final JFrame frame = new JFrame("Snake Game");
+            frame.setSize(WIDTH, HEIGHT);
+            Client client = new Client(new Socket("10.88.111.8", 2834));
+            client.player=new Sprite(100,200);
+            client.game=new SnakeGame(WIDTH, HEIGHT, client.player);
+            frame.add(client.game);
+            frame.setLocationRelativeTo(null);
+            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            frame.setResizable(false);
+            frame.setVisible(true);
+            frame.pack();
+            client.game.startGame();
+            client.listenForMessage();
+            client.sendMessage();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+
+
     }
+
     public Client(Socket socket){
         try{
             this.socket = socket;

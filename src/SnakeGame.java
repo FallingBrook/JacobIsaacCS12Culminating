@@ -5,18 +5,26 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.font.TextLayout;
+import java.util.ArrayList;
 
 public class SnakeGame extends JPanel implements ActionListener {
 
     private final int width;
     private final int height;
     private static final int FRAME_RATE = 20;
-    public SnakeGame(final int width, final int height) {
+
+    private Sprite player1;
+
+
+
+    public SnakeGame(final int width, final int height, Sprite player) {
         super();
         this.width = width;
         this.height = height;
         setPreferredSize(new Dimension(width, height));
         setBackground(Color.BLACK);
+        player1=player;
+
     }
 
     public void startGame(){
@@ -27,7 +35,13 @@ public class SnakeGame extends JPanel implements ActionListener {
             @Override
             public void keyPressed(KeyEvent e) {
                 if(e.getKeyCode() == KeyEvent.VK_LEFT)
-                    System.out.println("left pressed");
+                    player1.setPosXRunning(-8);
+                if(e.getKeyCode() == KeyEvent.VK_RIGHT)
+                    player1.setPosXRunning(8);
+                if(e.getKeyCode() == KeyEvent.VK_UP)
+                    player1.setPosYRunning(-8);
+
+
             }
         });
 
@@ -52,10 +66,15 @@ public class SnakeGame extends JPanel implements ActionListener {
             layout.draw(graphics2D, targetWidth, currentHeight);
             currentHeight += graphics.getFontMetrics().getHeight();
         }
+        graphics.setColor(Color.MAGENTA);
+        graphics.fillRect(player1.getPosX(), player1.getPosY(),100,100);
+
     }
 
     @Override
     public void actionPerformed(final ActionEvent e) {
         repaint();
     }
+
+
 }
