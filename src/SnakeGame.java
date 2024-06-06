@@ -11,16 +11,19 @@ public class SnakeGame extends JPanel implements ActionListener {
 
     private final int width;
     private final int height;
-    private static final int FRAME_RATE = 20;
+    private static final int FRAME_RATE = 50;
 
     private Sprite player1 = new Sprite(50,50);
 
     private Sprite enemy1 = new Sprite(50,50);
 
+    Client client;
 
 
 
-    public SnakeGame(final int width, final int height, Sprite player, Sprite enemy) {
+
+
+    public SnakeGame(final int width, final int height, Sprite player, Sprite enemy, Client client) {
         super();
         this.width = width;
         this.height = height;
@@ -28,7 +31,7 @@ public class SnakeGame extends JPanel implements ActionListener {
         setBackground(Color.BLACK);
         player1=player;
         enemy1=enemy;
-
+        this.client = client;
     }
 
     public void startGame(){
@@ -62,7 +65,7 @@ public class SnakeGame extends JPanel implements ActionListener {
         int currentHeight = height/4;
         final var graphics2D = (Graphics2D) graphics;
         final var frc = graphics2D.getFontRenderContext();
-        String message = "Snake Game\nPress space to play!";
+        String message = "Isaac>Jacob game\nPress space to play!";
         for(final var line : message.split("\n")){
             final var layout = new TextLayout(line, graphics.getFont(), frc);
             final var bounds = layout.getBounds();
@@ -79,7 +82,11 @@ public class SnakeGame extends JPanel implements ActionListener {
 
     @Override
     public void actionPerformed(final ActionEvent e) {
+        client.sendMessage();
+        client.listenForMessage();
         repaint();
+
+
     }
 
 

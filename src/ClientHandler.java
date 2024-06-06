@@ -2,74 +2,61 @@ import java.io.*;
 import java.net.Socket;
 import java.util.ArrayList;
 
-public class ClientHandler implements Runnable{
+public class ClientHandler implements Runnable {
 
-    // list of clients
     public static ArrayList<ClientHandler> clientHandlers = new ArrayList<>();
     private Socket socket;
-    private BufferedReader bufferedReader;
-    private BufferedWriter bufferedWriter;
+    private DataOutputStream dataOutputStream;
+    private DataInputStream dataInputStream;
 
-
-    public ClientHandler(Socket socket){
-
-        try{
+    public ClientHandler(Socket socket) {
+        try {
             this.socket = socket;
-            this.bufferedWriter = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
-            this.bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            this.dataOutputStream = new DataOutputStream(socket.getOutputStream());
+            this.dataInputStream = new DataInputStream(socket.getInputStream());
             clientHandlers.add(this);
-        }catch (IOException e){
-            closeEverything(socket, bufferedReader, bufferedWriter);
+        } catch (IOException e) {
+            closeEverything(socket, dataInputStream, dataOutputStream);
         }
     }
 
     @Override
-    public void run(){
-        String messageFromClient;
-
-        while(socket.isConnected()){
-            try{
-                messageFromClient = bufferedReader.readLine();
+    public void run() {
+        while (socket.isConnected()) {
+            try {
+                int messageFromClient = dataInputStream.readInt();
                 broadcastMessage(messageFromClient);
-            }catch (IOException e){
-                closeEverything(socket, bufferedReader, bufferedWriter);
+            } catch (IOException e) {
+                closeEverything(socket, dataInputStream, dataOutputStream);
                 break;
             }
         }
     }
 
-    public void broadcastMessage(String messageToSend){
-        for(ClientHandler clientHandler : clientHandlers){
-            try{
-                if(!clientHandler.equals(this)){
-                    clientHandler.bufferedWriter.write(messageToSend);
-                    clientHandler.bufferedWriter.newLine();
-
-                    // sends message
-                    clientHandler.bufferedWriter.flush();
+    public void broadcastMessage(int messageToSend) {
+        for (ClientHandler clientHandler : clientHandlers) {
+            try {
+                if (!clientHandler.equals(this)) {
+                    clientHandler.dataOutputStream.writeInt(messageToSend);
+                    clientHandler.dataOutputStream.flush();
                 }
-
             } catch (IOException e) {
-                closeEverything(socket, bufferedReader, bufferedWriter);
+                closeEverything(socket, dataInputStream, dataOutputStream);
             }
         }
     }
 
-    public void removeClientHandler(){
+    public void removeClientHandler() {
         clientHandlers.remove(this);
     }
 
-    public void closeEverything(Socket socket, BufferedReader bufferedReader, BufferedWriter bufferedWriter){
+    public void closeEverything(Socket socket, DataInputStream dataInputStream, DataOutputStream dataOutputStream) {
         removeClientHandler();
-        try{
-            if(bufferedReader != null)
-                bufferedReader.close();
-
-            if(bufferedWriter != null)
-                bufferedWriter.close();
-            if(socket != null)
-                socket.close();
-        }catch (IOException e){
+        try {
+            if (dataInputStream != null) dataInputStream.close();
+            if (dataOutputStream != null) dataOutputStream.close();
+            if (socket != null) socket.close();
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
