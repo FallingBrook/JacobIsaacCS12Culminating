@@ -11,7 +11,7 @@ public class SnakeGame extends JPanel implements ActionListener {
 
     private final int width;
     private final int height;
-    private static final int FRAME_RATE = 50;
+    private static final int FRAME_RATE = 300;
 
     private Sprite player1 = new Sprite(50,50, 100);
     private Sprite enemy1 = new Sprite(50,50, 100);
@@ -41,13 +41,25 @@ public class SnakeGame extends JPanel implements ActionListener {
             @Override
             public void keyPressed(KeyEvent e) {
                 if(e.getKeyCode() == KeyEvent.VK_LEFT){
-                    player1.setPosXRunning(-8);
+                    player1.getSpriteMovement().setDirX(-1);
+                    player1.getSpriteMovement().setLeftKey(true);
                 }
-                if(e.getKeyCode() == KeyEvent.VK_RIGHT)
-                    player1.setPosXRunning(8);
-                if(e.getKeyCode() == KeyEvent.VK_SPACE && player1.canPJump()){
-                    player1.setVeloY(-200);
+                else if(e.getKeyCode() == KeyEvent.VK_RIGHT){
+                    player1.getSpriteMovement().setDirX(1);
+                    player1.getSpriteMovement().setRightKey(true);
+                }
+                if(e.getKeyCode() == KeyEvent.VK_SPACE && player1.getSpriteMovement().canPJump()){
+                    player1.getSpriteMovement().startJump();
 
+                }
+            }
+            @Override
+            public void keyReleased(KeyEvent e) {
+                if(e.getKeyCode() == KeyEvent.VK_LEFT){
+                    player1.getSpriteMovement().setLeftKey(false);
+                }
+                else if(e.getKeyCode() == KeyEvent.VK_RIGHT){
+                    player1.getSpriteMovement().setRightKey(false);
                 }
             }
         });
@@ -74,9 +86,9 @@ public class SnakeGame extends JPanel implements ActionListener {
             currentHeight += graphics.getFontMetrics().getHeight();
         }
         graphics.setColor(Color.MAGENTA);
-        graphics.fillRect(player1.getPosX(), player1.getPosY(), player1.getSize(),player1.getSize());
+        graphics.fillRect((int)player1.getPosX(), (int)player1.getPosY(), player1.getSize(),player1.getSize());
         graphics.setColor(Color.RED);
-        graphics.fillRect(enemy1.getPosX(), enemy1.getPosY(),player1.getSize(),player1.getSize());
+        graphics.fillRect((int)enemy1.getPosX(), (int)enemy1.getPosY(),player1.getSize(),player1.getSize());
 
     }
 
@@ -88,18 +100,16 @@ public class SnakeGame extends JPanel implements ActionListener {
         client.sendMessage();
         client.listenForMessage();
 
-        player1.setPosXRunning(player1.getVeloX());
-        player1.setPosYRunning(player1.getVeloY());
+//        player1.setPosXRunning(player1.getVeloX());
+//        player1.setPosYRunning(player1.getVeloY());
 
         //add terminal velocity
-        if(player1.getVeloY()<4){
-            player1.setPosYRunning(1);
-        }
+//        if(player1.getVeloY()<4){
+//            player1.setPosYRunning(1);
+//        }
 
 
-        if (player1.getPosY() > 600 - player1.getSize()){
-            player1.setPosY(600-player1.getSize());
-        }
+        player1.SpritePhysics();
 
 
 

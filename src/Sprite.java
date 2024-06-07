@@ -1,97 +1,54 @@
+
+
 public class Sprite {
 
-    private int posX;
-    private int posY;
+    private double posX;
+    private double posY;
 
     private int size;
 
-    private String name;
 
-    private boolean playerIsJump;
-
-    private boolean canJump;
-    private int jumpStartPos;
-
-
-
-    private int veloX=0;
-
-    private int veloY=2;
-
-    public int getVeloX(){
-        return veloX;
-    }
-
-    public int getVeloY(){
-        return veloY;
-    }
-
-    public void setVeloX(int v){
-        veloX = v;
-    }
-
-    public void setVeloY(int v){
-        veloY = v;
-    }
-
-
+    private Movement movement;
 
     public Sprite(int x, int y, int size){
         posX = x;
         posY = y;
         this.size = size;
+        movement = new Movement(this);
+
     }
 
     public int getSize(){
         return size;
+
     }
 
-    public int getPosX(){
+    public double getPosX(){
         return posX;
     }
 
-    public int getPosY(){
+    public double getPosY(){
         return posY;
     }
 
-    public void setPosXRunning(int x){
-        posX+=x;
+    public Movement getSpriteMovement(){
+        return movement;
     }
 
-    public void setPosYRunning(int y){
-        posY+=y;
-    }
-
-    public void setPosX (int x){
+    public void setPosX (double x){
         posX = x;
+
+
     }
 
-    public void setPosY (int y){
+    public void setPosY (double y){
         posY = y;
     }
 
-/*
-    public void JumpPhysics(){
-        if(playerIsJump){
-            if(getPosY() <= jumpStartPos - jumpHeight){
-                playerIsJump = false;
-                return;
-            }
-            setPosYRunning(-jumpSpeed);
-        }
-        //else if(getPosY() < 600 - getSize()){
-            //setPosYRunning(8);
-        //}
 
-        if(getPosY() >= jumpStartPos && !canJump){
-            canJump = true;
-        }
+
+    public void SpritePhysics(){
+
+        movement.UpdateMovement();
     }
-
- */
-
-    public boolean canPJump(){
-        return canJump;
-    }
-
 }
