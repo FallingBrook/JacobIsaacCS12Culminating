@@ -8,10 +8,33 @@ public class Sprite {
     private String name;
 
     private boolean playerIsJump;
-    private int jumpHeight = 100;
-    private int jumpSpeed = 8;
+
     private boolean canJump;
     private int jumpStartPos;
+
+
+
+    private int veloX=0;
+
+    private int veloY=2;
+
+    public int getVeloX(){
+        return veloX;
+    }
+
+    public int getVeloY(){
+        return veloY;
+    }
+
+    public void setVeloX(int v){
+        veloX = v;
+    }
+
+    public void setVeloY(int v){
+        veloY = v;
+    }
+
+
 
     public Sprite(int x, int y, int size){
         posX = x;
@@ -47,13 +70,7 @@ public class Sprite {
         posY = y;
     }
 
-    public void startJump(){
-        jumpStartPos = getPosY();
-        playerIsJump = true;
-        canJump = false;
-        jumpStartPos = getPosY();
-    }
-
+/*
     public void JumpPhysics(){
         if(playerIsJump){
             if(getPosY() <= jumpStartPos - jumpHeight){
@@ -62,14 +79,16 @@ public class Sprite {
             }
             setPosYRunning(-jumpSpeed);
         }
-        else if(getPosY() < 600 - getSize()){
-            setPosYRunning(8);
-        }
+        //else if(getPosY() < 600 - getSize()){
+            //setPosYRunning(8);
+        //}
 
         if(getPosY() >= jumpStartPos && !canJump){
             canJump = true;
         }
     }
+
+ */
 
     public boolean canPJump(){
         return canJump;

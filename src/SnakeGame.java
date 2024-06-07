@@ -43,11 +43,11 @@ public class SnakeGame extends JPanel implements ActionListener {
                 if(e.getKeyCode() == KeyEvent.VK_LEFT){
                     player1.setPosXRunning(-8);
                 }
-
                 if(e.getKeyCode() == KeyEvent.VK_RIGHT)
                     player1.setPosXRunning(8);
                 if(e.getKeyCode() == KeyEvent.VK_SPACE && player1.canPJump()){
-                    player1.startJump();
+                    player1.setVeloY(-200);
+
                 }
             }
         });
@@ -87,9 +87,27 @@ public class SnakeGame extends JPanel implements ActionListener {
     public void actionPerformed(final ActionEvent e) {
         client.sendMessage();
         client.listenForMessage();
+
+        player1.setPosXRunning(player1.getVeloX());
+        player1.setPosYRunning(player1.getVeloY());
+
+        //add terminal velocity
+        if(player1.getVeloY()<4){
+            player1.setPosYRunning(1);
+        }
+
+
+        if (player1.getPosY() > 600 - player1.getSize()){
+            player1.setPosY(600-player1.getSize());
+        }
+
+
+
         repaint();
 
-        player1.JumpPhysics();
+
+
+        //player1.JumpPhysics();
     }
 
 
