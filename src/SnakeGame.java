@@ -13,9 +13,8 @@ public class SnakeGame extends JPanel implements ActionListener {
     private final int height;
     private static final int FRAME_RATE = 50;
 
-    private Sprite player1 = new Sprite(50,50);
-
-    private Sprite enemy1 = new Sprite(50,50);
+    private Sprite player1 = new Sprite(50,50, 100);
+    private Sprite enemy1 = new Sprite(50,50, 100);
 
     Client client;
 
@@ -41,14 +40,15 @@ public class SnakeGame extends JPanel implements ActionListener {
         addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
-                if(e.getKeyCode() == KeyEvent.VK_LEFT)
+                if(e.getKeyCode() == KeyEvent.VK_LEFT){
                     player1.setPosXRunning(-8);
+                }
+
                 if(e.getKeyCode() == KeyEvent.VK_RIGHT)
                     player1.setPosXRunning(8);
-                if(e.getKeyCode() == KeyEvent.VK_UP)
-                    player1.setPosYRunning(-8);
-
-
+                if(e.getKeyCode() == KeyEvent.VK_SPACE && player1.canPJump()){
+                    player1.startJump();
+                }
             }
         });
 
@@ -74,20 +74,24 @@ public class SnakeGame extends JPanel implements ActionListener {
             currentHeight += graphics.getFontMetrics().getHeight();
         }
         graphics.setColor(Color.MAGENTA);
-        graphics.fillRect(player1.getPosX(), player1.getPosY(),100,100);
+        graphics.fillRect(player1.getPosX(), player1.getPosY(), player1.getSize(),player1.getSize());
         graphics.setColor(Color.RED);
-        graphics.fillRect(enemy1.getPosX(), enemy1.getPosY(),100,100);
+        graphics.fillRect(enemy1.getPosX(), enemy1.getPosY(),player1.getSize(),player1.getSize());
 
     }
 
+    /** game loop. called according to frame rate
+     * @param e the event to be processed
+     */
     @Override
     public void actionPerformed(final ActionEvent e) {
         client.sendMessage();
         client.listenForMessage();
         repaint();
 
-
+        player1.JumpPhysics();
     }
+
 
 
 }

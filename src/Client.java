@@ -26,9 +26,9 @@ public class Client {
         try {
             final JFrame frame = new JFrame("Jacob is super cool Game");
             frame.setSize(WIDTH, HEIGHT);
-            Client client = new Client(new Socket("10.88.111.8", 2834));
-            client.player = new Sprite(100, 200);
-            client.enemy = new Sprite(100, 200);
+            Client client = new Client(new Socket("10.0.0.59", 2834));
+            client.player = new Sprite(100, 200, 100);
+            client.enemy = new Sprite(100, 200, 100);
             client.game = new SnakeGame(WIDTH, HEIGHT, client.player, client.enemy, client);
             frame.add(client.game);
             frame.setLocationRelativeTo(null);
@@ -66,6 +66,7 @@ public class Client {
         try {
             if (socket.isConnected()) {
                 dataOutputStream.writeInt(player.getPosX());
+                dataOutputStream.writeInt(player.getPosY());
                 dataOutputStream.flush();
             }
         } catch (IOException e) {
@@ -78,7 +79,8 @@ public class Client {
             try {
                 int enemyPosX = dataInputStream.readInt();
                 enemy.setPosX(enemyPosX);
-                //System.out.println(enemyPosX);
+                int enemyPosY = dataInputStream.readInt();
+                enemy.setPosY(enemyPosY);
             } catch (IOException e) {
                 closeEverything(socket, dataInputStream, dataOutputStream);
             }
