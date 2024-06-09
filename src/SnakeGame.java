@@ -5,6 +5,12 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.font.TextLayout;
+import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
+import java.awt.image.BufferedImage;
+import java.awt.image.BufferedImageOp;
+import java.awt.image.ColorModel;
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class SnakeGame extends JPanel implements ActionListener {
@@ -18,11 +24,13 @@ public class SnakeGame extends JPanel implements ActionListener {
 
     Client client;
 
+    private int test=0;
 
 
 
 
-    public SnakeGame(final int width, final int height, Sprite player, Sprite enemy, Client client) {
+
+    public SnakeGame(final int width, final int height, Sprite player, Sprite enemy, Client client) throws IOException {
         super();
         this.width = width;
         this.height = height;
@@ -67,6 +75,7 @@ public class SnakeGame extends JPanel implements ActionListener {
         // calls action performed method
         new Timer(1000 / FRAME_RATE, this).start();
 
+
     }
 
     @Override
@@ -86,9 +95,25 @@ public class SnakeGame extends JPanel implements ActionListener {
             currentHeight += graphics.getFontMetrics().getHeight();
         }
         graphics.setColor(Color.MAGENTA);
-        graphics.fillRect((int)player1.getPosX(), (int)player1.getPosY(), player1.getSize(),player1.getSize());
+        //graphics.fillRect((int)player1.getPosX(), (int)player1.getPosY(), player1.getSize(),player1.getSize());
         graphics.setColor(Color.RED);
         graphics.fillRect((int)enemy1.getPosX(), (int)enemy1.getPosY(),player1.getSize(),player1.getSize());
+
+
+
+        graphics.drawImage(player1.getFrame(0,test),(int)player1.getPosX(),(int)player1.getPosY(),this);
+
+
+
+
+
+
+
+
+
+
+
+
 
     }
 
@@ -99,27 +124,11 @@ public class SnakeGame extends JPanel implements ActionListener {
     public void actionPerformed(final ActionEvent e) {
         client.sendMessage();
         client.listenForMessage();
-
-//        player1.setPosXRunning(player1.getVeloX());
-//        player1.setPosYRunning(player1.getVeloY());
-
-        //add terminal velocity
-//        if(player1.getVeloY()<4){
-//            player1.setPosYRunning(1);
-//        }
-
-
         player1.SpritePhysics();
-
-
-
         repaint();
-
-
-
-        //player1.JumpPhysics();
+        test++;
+        if (test==5){
+            test=0;
+        }
     }
-
-
-
 }

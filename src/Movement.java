@@ -50,6 +50,7 @@ public class Movement {
     }
     public void startJump(){
         isGrounded = false;
+        canJump=false;
         veloY = jumpSpeed;
     }
     public boolean canPJump(){
