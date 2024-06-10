@@ -17,7 +17,7 @@ public class SnakeGame extends JPanel implements ActionListener {
     private Sprite enemy1 = new Sprite(50,50, 100);
 
     Client client;
-    
+
 
     public SnakeGame(final int width, final int height, Sprite player, Sprite enemy, Client client) {
         super();

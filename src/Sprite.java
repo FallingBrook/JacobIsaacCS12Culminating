@@ -137,13 +137,14 @@ public class Sprite implements ActionListener {
         spriteInd = 0;
     }
 
-    private BufferedImage flipImage(BufferedImage img){
+    public BufferedImage flipImage(BufferedImage img){
         int width = img.getWidth();
         int height = img.getHeight();
         BufferedImage flippedImage = new BufferedImage(width,height,img.getType());
         Graphics2D g = flippedImage.createGraphics();
         g.drawImage(img,0,0,width,height,width,0,0,height,null);
         g.dispose();
+        spriteInd = 0;
         return flippedImage;
     }
 
