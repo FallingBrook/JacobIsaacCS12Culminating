@@ -16,6 +16,8 @@ public class Sprite implements ActionListener {
 
     private int size;
 
+    private boolean right=true;
+
 
 
     // 0 = Idle,
@@ -38,9 +40,6 @@ public class Sprite implements ActionListener {
 
         try {
             spriteSheets = new ArrayList<BufferedImage>();
-//            spriteSheets.add(ImageIO.read(new File("\"C:\\Users\\jacob\\IdeaProjects\\JacobIsaacCS12Culminating\\src\\Idle.png\"")));
-//            spriteSheets.add(ImageIO.read(this.getClass().getClassLoader().getResourceAsStream("Walk.png")));
-//            spriteSheets.add(ImageIO.read(new File(Paths.get)));
             spriteSheets.add(ImageIO.read(this.getClass().getClassLoader().getResourceAsStream("Idle.png")));
             spriteSheets.add(ImageIO.read(this.getClass().getClassLoader().getResourceAsStream("Walk.png")));
             currentSpriteSheet = 0;
@@ -92,13 +91,35 @@ public class Sprite implements ActionListener {
         spriteInd++;
         if(spriteInd > currentSpriteIndLength)
             spriteInd = spriteStartInd;
-        currentSprite = spriteSheets.get(currentSpriteSheet).getSubimage(spriteSheetsCoordinates[spriteInd][0],
+
+        if(right) {
+            currentSprite=spriteSheets.get(currentSpriteSheet).getSubimage(spriteSheetsCoordinates[spriteInd][0],
+                    spriteSheetsCoordinates[spriteInd][1],
+                    spriteSheetsCoordinates[spriteInd][2],
+                    spriteSheetsCoordinates[spriteInd][3]);
+        }
+        else{
+            currentSprite=getImageFlip();
+
+        }
+    }
+
+    public void setRight(boolean s){
+        right = s;
+
+    }
+
+    public Image getImageFlip(){
+
+        BufferedImage temp = flipImage(spriteSheets.get(currentSpriteSheet));
+
+        return
+        temp.getSubimage(spriteSheetsCoordinates[spriteInd][0],
                 spriteSheetsCoordinates[spriteInd][1],
                 spriteSheetsCoordinates[spriteInd][2],
                 spriteSheetsCoordinates[spriteInd][3]);
-        System.out.println(spriteSheetsCoordinates[spriteInd][1]);
-
     }
+
     public void ChangeAnim(String newAnim){
         currentAnim = newAnim;
         switch (currentAnim){
@@ -114,7 +135,16 @@ public class Sprite implements ActionListener {
                 break;
         }
         spriteInd = 0;
-        System.out.println(currentAnim);
+    }
+
+    private BufferedImage flipImage(BufferedImage img){
+        int width = img.getWidth();
+        int height = img.getHeight();
+        BufferedImage flippedImage = new BufferedImage(width,height,img.getType());
+        Graphics2D g = flippedImage.createGraphics();
+        g.drawImage(img,0,0,width,height,width,0,0,height,null);
+        g.dispose();
+        return flippedImage;
     }
 
     @Override

@@ -26,7 +26,7 @@ public class Client {
         try {
             final JFrame frame = new JFrame("Jacob is super cool Game");
             frame.setSize(WIDTH, HEIGHT);
-            Client client = new Client(new Socket("10.0.0.59", 2834));
+            Client client = new Client(new Socket("172.20.10.2", 2834));
             client.player = new Sprite(100, 200, 100);
             client.enemy = new Sprite(100, 200, 100);
             client.game = new SnakeGame(WIDTH, HEIGHT, client.player, client.enemy, client);
@@ -37,12 +37,6 @@ public class Client {
             frame.setVisible(true);
             frame.pack();
             client.game.startGame();
-
-            // Start communication and game logic in separate threads
-            //new Thread(client::sendMessage).start();
-            //new Thread(client::listenForMessage).start();
-
-
 
         } catch (IOException e) {
             throw new RuntimeException(e);

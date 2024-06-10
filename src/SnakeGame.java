@@ -17,10 +17,7 @@ public class SnakeGame extends JPanel implements ActionListener {
     private Sprite enemy1 = new Sprite(50,50, 100);
 
     Client client;
-
-
-
-
+    
 
     public SnakeGame(final int width, final int height, Sprite player, Sprite enemy, Client client) {
         super();
@@ -43,17 +40,25 @@ public class SnakeGame extends JPanel implements ActionListener {
                 if(e.getKeyCode() == KeyEvent.VK_LEFT){
                     player1.getSpriteMovement().setDirX(-1);
                     player1.getSpriteMovement().setLeftKey(true);
+                    player1.setRight(false);
                     player1.ChangeAnim("walk");
-                }
-                else if(e.getKeyCode() == KeyEvent.VK_RIGHT){
-                    player1.getSpriteMovement().setDirX(1);
-                    player1.getSpriteMovement().setRightKey(true);
+
+
 
                 }
+                else if(e.getKeyCode() == KeyEvent.VK_RIGHT){
+                    player1.setRight(true);
+                    player1.getSpriteMovement().setDirX(1);
+                    player1.getSpriteMovement().setRightKey(true);
+                    player1.ChangeAnim("walk");
+                    System.out.println("right pressed");
+                }
+
                 if(e.getKeyCode() == KeyEvent.VK_SPACE && player1.getSpriteMovement().canPJump()){
                     player1.getSpriteMovement().startJump();
 
                 }
+
             }
             @Override
             public void keyReleased(KeyEvent e) {

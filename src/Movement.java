@@ -77,11 +77,12 @@ public class Movement{
     public void HorizontalMovement(int dir){
         if(!leftPressed && !rightPressed){
             dir = 0;
-//            player.ChangeAnim("idle");
-        }
+           player.ChangeAnim("idle");
+            System.out.println("1");
+       // }
 //        else{
 //            player.ChangeAnim("idle");
-//        }
+       }
         if(dir > 0 && veloX < moveSpeed){
             veloX += moveAccel;
 
