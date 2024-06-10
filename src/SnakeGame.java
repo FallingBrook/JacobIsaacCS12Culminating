@@ -43,10 +43,12 @@ public class SnakeGame extends JPanel implements ActionListener {
                 if(e.getKeyCode() == KeyEvent.VK_LEFT){
                     player1.getSpriteMovement().setDirX(-1);
                     player1.getSpriteMovement().setLeftKey(true);
+                    player1.ChangeAnim("walk");
                 }
                 else if(e.getKeyCode() == KeyEvent.VK_RIGHT){
                     player1.getSpriteMovement().setDirX(1);
                     player1.getSpriteMovement().setRightKey(true);
+
                 }
                 if(e.getKeyCode() == KeyEvent.VK_SPACE && player1.getSpriteMovement().canPJump()){
                     player1.getSpriteMovement().startJump();
@@ -85,10 +87,11 @@ public class SnakeGame extends JPanel implements ActionListener {
             layout.draw(graphics2D, targetWidth, currentHeight);
             currentHeight += graphics.getFontMetrics().getHeight();
         }
-        graphics.setColor(Color.MAGENTA);
-        graphics.fillRect((int)player1.getPosX(), (int)player1.getPosY(), player1.getSize(),player1.getSize());
+
+        graphics.drawImage(player1.getSprite(), (int)player1.getPosX(), (int)player1.getPosY(), null);
         graphics.setColor(Color.RED);
-        graphics.fillRect((int)enemy1.getPosX(), (int)enemy1.getPosY(),player1.getSize(),player1.getSize());
+        graphics.drawImage(enemy1.getSprite(), (int)enemy1.getPosX(), (int)enemy1.getPosY(), null);
+//        graphics.fillRect((int)enemy1.getPosX(), (int)enemy1.getPosY(),player1.getSize(),player1.getSize());
 
     }
 

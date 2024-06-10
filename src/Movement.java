@@ -2,7 +2,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.nio.file.Paths;
 
-public class Movement {
+public class Movement{
     // region movement var
     private int moveSpeed = 15;
     private double moveAccel = 0.6;
@@ -50,6 +50,7 @@ public class Movement {
     }
     public void startJump(){
         isGrounded = false;
+        canJump = false;
         veloY = jumpSpeed;
     }
     public boolean canPJump(){
@@ -76,8 +77,11 @@ public class Movement {
     public void HorizontalMovement(int dir){
         if(!leftPressed && !rightPressed){
             dir = 0;
+//            player.ChangeAnim("idle");
         }
-
+//        else{
+//            player.ChangeAnim("idle");
+//        }
         if(dir > 0 && veloX < moveSpeed){
             veloX += moveAccel;
 
