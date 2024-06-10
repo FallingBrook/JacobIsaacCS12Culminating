@@ -144,6 +144,7 @@ public class Sprite implements ActionListener {
         Graphics2D g = flippedImage.createGraphics();
         g.drawImage(img,0,0,width,height,width,0,0,height,null);
         g.dispose();
+        spriteInd = 0;
         return flippedImage;
     }
 
