@@ -41,25 +41,25 @@ public class SnakeGame extends JPanel implements ActionListener {
             @Override
             public void keyPressed(KeyEvent e) {
                 if(e.getKeyCode() == KeyEvent.VK_LEFT){
-                    player1.getSpriteMovement().setDirX(-1);
-                    player1.getSpriteMovement().setLeftKey(true);
+                    player1.setDirX(-1);
+                    player1.setLeftKey(true);
                 }
                 else if(e.getKeyCode() == KeyEvent.VK_RIGHT){
-                    player1.getSpriteMovement().setDirX(1);
-                    player1.getSpriteMovement().setRightKey(true);
+                    player1.setDirX(1);
+                    player1.setRightKey(true);
                 }
-                if(e.getKeyCode() == KeyEvent.VK_SPACE && player1.getSpriteMovement().canPJump()){
-                    player1.getSpriteMovement().startJump();
+                if(e.getKeyCode() == KeyEvent.VK_SPACE && player1.canPJump()){
+                    player1.startJump();
 
                 }
             }
             @Override
             public void keyReleased(KeyEvent e) {
                 if(e.getKeyCode() == KeyEvent.VK_LEFT){
-                    player1.getSpriteMovement().setLeftKey(false);
+                    player1.setLeftKey(false);
                 }
                 else if(e.getKeyCode() == KeyEvent.VK_RIGHT){
-                    player1.getSpriteMovement().setRightKey(false);
+                    player1.setRightKey(false);
                 }
             }
         });
