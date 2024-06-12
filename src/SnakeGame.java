@@ -11,10 +11,14 @@ public class SnakeGame extends JPanel implements ActionListener {
 
     private final int width;
     private final int height;
-    private static final int FRAME_RATE = 300;
+    private static final int FRAME_RATE = 100;
 
-    private Sprite player1 = new Sprite(50,50, 100);
-    private Sprite enemy1 = new Sprite(50,50, 100);
+    private Sprite player1;
+    private Sprite enemy;
+
+    private Sprite enemy2;
+
+    private Sprite enemy3;
 
     Client client;
 
@@ -26,9 +30,36 @@ public class SnakeGame extends JPanel implements ActionListener {
         setPreferredSize(new Dimension(width, height));
         setBackground(Color.BLACK);
         player1=player;
-        enemy1=enemy;
+        this.enemy=enemy;
         this.client = client;
     }
+
+    public SnakeGame(final int width, final int height, Sprite player, Sprite enemy, Sprite enemy2, Client client){
+        super();
+        this.width = width;
+        this.height = height;
+        setPreferredSize(new Dimension(width, height));
+        setBackground(Color.BLACK);
+        player1=player;
+        this.enemy=enemy;
+        this.enemy2=enemy2;
+        this.client = client;
+    }
+
+    public SnakeGame(final int width, final int height, Sprite player, Sprite enemy, Sprite enemy2, Sprite enemy3, Client client){
+        super();
+        this.width = width;
+        this.height = height;
+        setPreferredSize(new Dimension(width, height));
+        setBackground(Color.BLACK);
+        player1=player;
+        this.enemy=enemy;
+        this.enemy2=enemy2;
+        this.enemy3=enemy3;
+        this.client = client;
+    }
+
+
 
     public void startGame(){
         setFocusable(true);
@@ -51,7 +82,6 @@ public class SnakeGame extends JPanel implements ActionListener {
                     player1.getSpriteMovement().setDirX(1);
                     player1.getSpriteMovement().setRightKey(true);
                     player1.ChangeAnim("walk");
-                    System.out.println("right pressed");
                 }
 
                 if(e.getKeyCode() == KeyEvent.VK_SPACE && player1.getSpriteMovement().canPJump()){
@@ -107,25 +137,9 @@ public class SnakeGame extends JPanel implements ActionListener {
     public void actionPerformed(final ActionEvent e) {
         client.sendMessage();
         client.listenForMessage();
-
-//        player1.setPosXRunning(player1.getVeloX());
-//        player1.setPosYRunning(player1.getVeloY());
-
-        //add terminal velocity
-//        if(player1.getVeloY()<4){
-//            player1.setPosYRunning(1);
-//        }
-
-
         player1.SpritePhysics();
-
-
-
         repaint();
 
-
-
-        //player1.JumpPhysics();
     }
 
 

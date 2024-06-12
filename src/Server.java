@@ -1,6 +1,7 @@
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.Scanner;
 
 public class Server {
     private final ServerSocket serverSocket;
@@ -11,9 +12,12 @@ public class Server {
 
     public void startServer(){
         try{
+            System.out.println("Enter number of players");
+            Scanner sc = new Scanner(System.in);
+            int num= sc.nextInt();
             while(!serverSocket.isClosed()){
                 Socket socket = serverSocket.accept();
-                ClientHandler clientHandler = new ClientHandler(socket);
+                ClientHandler clientHandler = new ClientHandler(socket,num);
                 System.out.println("Client Connected");
                 Thread thread = new Thread(clientHandler);
                 thread.start();

@@ -78,7 +78,6 @@ public class Movement{
         if(!leftPressed && !rightPressed){
             dir = 0;
            player.ChangeAnim("idle");
-            System.out.println("1");
        // }
 //        else{
 //            player.ChangeAnim("idle");

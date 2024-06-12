@@ -1,6 +1,7 @@
 import java.io.*;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Scanner;
 
 public class ClientHandler implements Runnable {
 
@@ -9,8 +10,13 @@ public class ClientHandler implements Runnable {
     private DataOutputStream dataOutputStream;
     private DataInputStream dataInputStream;
 
-    public ClientHandler(Socket socket) {
+    private boolean sent = false;
+
+    private static int players;
+
+    public ClientHandler(Socket socket, int num) {
         try {
+            players=num;
             this.socket = socket;
             this.dataOutputStream = new DataOutputStream(socket.getOutputStream());
             this.dataInputStream = new DataInputStream(socket.getInputStream());
@@ -22,15 +28,59 @@ public class ClientHandler implements Runnable {
 
     @Override
     public void run() {
+
+
         while (socket.isConnected()) {
             try {
-                int messageFromClient = dataInputStream.readInt();
-                broadcastMessage(messageFromClient);
+
+                if(!sent){
+                    while (true){
+                        if (clientHandlers.size()==players){
+                            break;
+                        }
+                    }
+                    System.out.println("here");
+
+
+                    for (ClientHandler clientHandler : clientHandlers) {
+                        try {
+                            clientHandler.dataInputStream.readInt();
+                        } catch (IOException e) {
+                            closeEverything(socket, dataInputStream, dataOutputStream);
+                        }
+                    }
+
+                    brodcastNumPlayersAndClientNumber();
+                }
+                else {
+                    int messageFromClient = dataInputStream.readInt();
+                    broadcastMessage(messageFromClient);
+                }
             } catch (IOException e) {
                 closeEverything(socket, dataInputStream, dataOutputStream);
                 break;
             }
         }
+    }
+
+    public void brodcastNumPlayersAndClientNumber(){
+
+        //int players = clientHandlers.size();
+
+
+        for (ClientHandler clientHandler : clientHandlers) {
+            try {
+                    clientHandler.dataOutputStream.writeInt(clientHandlers.indexOf(clientHandler)+1);
+                    clientHandler.dataOutputStream.flush();
+
+
+            } catch (IOException e) {
+                closeEverything(socket, dataInputStream, dataOutputStream);
+            }
+        }
+
+        sent=true;
+
     }
 
     public void broadcastMessage(int messageToSend) {

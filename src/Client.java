@@ -1,6 +1,7 @@
 import javax.swing.*;
 import java.io.*;
 import java.net.Socket;
+import java.util.Scanner;
 
 public class Client {
 
@@ -8,8 +9,14 @@ public class Client {
     private DataOutputStream dataOutputStream;
     private DataInputStream dataInputStream;
 
+    int clientNum;
+
     private Sprite player;
     private Sprite enemy;
+
+    private Sprite enemy2;
+
+    private Sprite enemy3;
 
     private SnakeGame game;
 
@@ -27,9 +34,31 @@ public class Client {
             final JFrame frame = new JFrame("Jacob is super cool Game");
             frame.setSize(WIDTH, HEIGHT);
             Client client = new Client(new Socket("172.20.10.2", 2834));
+            client.readyUp();
+
+            client.clientNum = client.streamReadFirst();
+
+            System.out.println(STR."player\{client.clientNum}");
+
             client.player = new Sprite(100, 200, 100);
-            client.enemy = new Sprite(100, 200, 100);
-            client.game = new SnakeGame(WIDTH, HEIGHT, client.player, client.enemy, client);
+
+            client.enemy = new Sprite(700,200,100);
+
+            if(client.clientNum==3){
+                client.enemy2 = new Sprite(400,200,100);
+                client.game = new SnakeGame(WIDTH, HEIGHT, client.player, client.enemy,client.enemy2, client);
+
+            }
+
+            else if(client.clientNum==4){
+                client.enemy2 = new Sprite(400,200,100);
+                client.enemy3 = new Sprite(200,200,100);
+                client.game = new SnakeGame(WIDTH, HEIGHT, client.player, client.enemy,client.enemy2,client.enemy3, client);
+            }
+            else{
+                client.game = new SnakeGame(WIDTH, HEIGHT, client.player, client.enemy, client);
+            }
+
             frame.add(client.game);
             frame.setLocationRelativeTo(null);
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -67,6 +96,34 @@ public class Client {
             closeEverything(socket, dataInputStream, dataOutputStream);
         }
     }
+
+    public int streamReadFirst(){
+        if (socket.isConnected()) {
+            try {
+                return dataInputStream.readInt();
+            } catch (IOException e) {
+                closeEverything(socket, dataInputStream, dataOutputStream);
+            }
+        }
+
+        return -1;
+    }
+
+    public void readyUp(){
+
+        try {
+            if (socket.isConnected()) {
+                Scanner sc = new Scanner(System.in);
+                int ready = sc.nextInt();
+                dataOutputStream.writeInt(ready);
+            }
+        } catch (IOException e) {
+            closeEverything(socket, dataInputStream, dataOutputStream);
+        }
+
+
+    }
+
 
     public void listenForMessage() {
         if (socket.isConnected()) {
