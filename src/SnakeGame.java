@@ -19,9 +19,7 @@ public class SnakeGame extends JPanel implements ActionListener {
 
     Client client;
 
-
-
-
+    public int EnemyDir = 0;
 
     public SnakeGame(final int width, final int height, Sprite player, Sprite enemy, Client client) {
         super();
@@ -41,10 +39,15 @@ public class SnakeGame extends JPanel implements ActionListener {
         addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
-                if(e.getKeyCode() == KeyEvent.VK_LEFT)
-                    player1.setPosXRunning(-8);
-                if(e.getKeyCode() == KeyEvent.VK_RIGHT)
-                    player1.setPosXRunning(8);
+                if(e.getKeyCode() == KeyEvent.VK_LEFT){
+                    player1.setPosXRunning(-4);
+                    client.newDir = 1;
+                }
+                if(e.getKeyCode() == KeyEvent.VK_RIGHT){
+                    player1.setPosXRunning(4);
+                    client.newDir = -1;
+                }
+
                 if(e.getKeyCode() == KeyEvent.VK_UP)
                     player1.setPosYRunning(-8);
 
@@ -76,6 +79,10 @@ public class SnakeGame extends JPanel implements ActionListener {
         graphics.setColor(Color.MAGENTA);
         graphics.fillRect(player1.getPosX(), player1.getPosY(),100,100);
         graphics.setColor(Color.RED);
+        if(EnemyDir == 1)
+            enemy1.setPosX(enemy1.getPosX() + 4);
+        if(EnemyDir == -1)
+            enemy1.setPosX(enemy1.getPosX() - 4);
         graphics.fillRect(enemy1.getPosX(), enemy1.getPosY(),100,100);
 
     }

@@ -14,7 +14,9 @@ public class Client {
     private SnakeGame game;
 
 
-
+    private int currentDir;
+    public int newDir;
+    private int enemyDir;
 
     private static final int FRAME_RATE = 20;
     private static final int WIDTH = 800;
@@ -26,7 +28,7 @@ public class Client {
         try {
             final JFrame frame = new JFrame("Jacob is super cool Game");
             frame.setSize(WIDTH, HEIGHT);
-            Client client = new Client(new Socket("10.88.111.8", 2834));
+            Client client = new Client(new Socket("192.168.208.172", 2834));
             client.player = new Sprite(100, 200);
             client.enemy = new Sprite(100, 200);
             client.game = new SnakeGame(WIDTH, HEIGHT, client.player, client.enemy, client);
@@ -63,6 +65,10 @@ public class Client {
 
     public void sendMessage() {
 
+        if(currentDir != newDir)
+            return;
+        currentDir = newDir;
+
         try {
             if (socket.isConnected()) {
                 dataOutputStream.writeInt(player.getPosX());
@@ -74,10 +80,15 @@ public class Client {
     }
 
     public void listenForMessage() {
+        if(game.EnemyDir == enemyDir)
+            return;
+        game.EnemyDir = enemyDir;
+
         if (socket.isConnected()) {
             try {
                 int enemyPosX = dataInputStream.readInt();
-                enemy.setPosX(enemyPosX);
+                game.EnemyDir = enemyPosX;
+//                enemy.setPosX(enemyPosX);
                 //System.out.println(enemyPosX);
             } catch (IOException e) {
                 closeEverything(socket, dataInputStream, dataOutputStream);
