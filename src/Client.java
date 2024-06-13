@@ -11,12 +11,16 @@ public class Client {
 
     int clientNum;
 
+    int playersNum;
+
     private Sprite player;
-    private Sprite enemy;
+    private Sprite enemy1;
 
     private Sprite enemy2;
 
     private Sprite enemy3;
+
+    private Sprite enemy4;
 
     private SnakeGame game;
 
@@ -33,31 +37,93 @@ public class Client {
         try {
             final JFrame frame = new JFrame("Jacob is super cool Game");
             frame.setSize(WIDTH, HEIGHT);
-            Client client = new Client(new Socket("172.20.10.2", 2834));
+            Client client = new Client(new Socket("10.88.111.5", 2834));
             client.readyUp();
 
             client.clientNum = client.streamReadFirst();
+            client.playersNum=client.streamReadFirst();
+
 
             System.out.println(STR."player\{client.clientNum}");
 
-            client.player = new Sprite(100, 200, 100);
 
-            client.enemy = new Sprite(700,200,100);
 
-            if(client.clientNum==3){
-                client.enemy2 = new Sprite(400,200,100);
-                client.game = new SnakeGame(WIDTH, HEIGHT, client.player, client.enemy,client.enemy2, client);
+            switch(client.playersNum){
+                case 2:
 
+                    if(client.clientNum==1){
+                        client.player = new Sprite(100,200,100);
+                        client.enemy2 = new Sprite(700,200,100);
+                        client.game = new SnakeGame(WIDTH, HEIGHT, client.player,client.enemy2, client);
+                    }
+                    else{
+                        client.enemy1= new Sprite(100,200,100);
+                        client.player = new Sprite(700,200,100);
+                        client.game = new SnakeGame(WIDTH, HEIGHT, client.enemy1, client.player, client);
+                    }
+                    break;
+
+                case 3:
+
+                    if(client.clientNum==1){
+                        client.player = new Sprite(100,200,100);
+                        client.enemy2 = new Sprite(700,200,100);
+                        client.enemy3 = new Sprite(200,200,100);
+                        client.game = new SnakeGame(WIDTH, HEIGHT, client.player, client.enemy2,client.enemy3, client);
+                    }
+                    else if (client.clientNum==2){
+                        client.enemy1= new Sprite(100,200,100);
+                        client.player = new Sprite(700,200,100);
+                        client.enemy3 = new Sprite(200,200,100);
+                        client.game = new SnakeGame(WIDTH, HEIGHT, client.enemy1, client.player,client.enemy3, client);
+                    }
+                    else{
+                        client.enemy1= new Sprite(100,200,100);
+                        client.enemy2 = new Sprite(700,200,100);
+                        client.player = new Sprite(200,200,100);
+                        client.game = new SnakeGame(WIDTH, HEIGHT, client.enemy1, client.enemy2,client.player, client);
+                    }
+                    break;
+
+                case 4:
+                    if(client.clientNum==1){
+                        client.player = new Sprite(100,200,100);
+                        client.enemy2 = new Sprite(700,200,100);
+                        client.enemy3 = new Sprite(200,200,100);
+                        client.enemy4 = new Sprite(600,200,100);
+                        client.game = new SnakeGame(WIDTH, HEIGHT, client.player, client.enemy2,client.enemy3,client.enemy4,client);
+
+                    }
+                    else if (client.clientNum==2){
+                        client.enemy1= new Sprite(100,200,100);
+                        client.player = new Sprite(700,200,100);
+                        client.enemy3 = new Sprite(200,200,100);
+                        client.enemy4 = new Sprite(600,200,100);
+                        client.game = new SnakeGame(WIDTH, HEIGHT, client.enemy1, client.player,client.enemy3,client.enemy4,client);
+                    }
+                    else if (client.clientNum==3){
+                        client.enemy1= new Sprite(100,200,100);
+                        client.enemy2 = new Sprite(700,200,100);
+                        client.player = new Sprite(200,200,100);
+                        client.enemy4 = new Sprite(600,200,100);
+                        client.game = new SnakeGame(WIDTH, HEIGHT, client.enemy1, client.enemy2,client.player,client.enemy4,client);
+                    }
+                    else{
+                        client.enemy1= new Sprite(100,200,100);
+                        client.enemy2 = new Sprite(700,200,100);
+                        client.enemy3 = new Sprite(200,200,100);
+                        client.player = new Sprite(600,200,100);
+                        client.game = new SnakeGame(WIDTH, HEIGHT, client.enemy1, client.enemy2,client.enemy3,client.player,client);
+                    }
+                    break;
             }
 
-            else if(client.clientNum==4){
-                client.enemy2 = new Sprite(400,200,100);
-                client.enemy3 = new Sprite(200,200,100);
-                client.game = new SnakeGame(WIDTH, HEIGHT, client.player, client.enemy,client.enemy2,client.enemy3, client);
-            }
-            else{
-                client.game = new SnakeGame(WIDTH, HEIGHT, client.player, client.enemy, client);
-            }
+
+
+
+
+
+
 
             frame.add(client.game);
             frame.setLocationRelativeTo(null);
@@ -88,6 +154,7 @@ public class Client {
 
         try {
             if (socket.isConnected()) {
+                dataOutputStream.writeInt(clientNum);
                 dataOutputStream.writeDouble(player.getPosX());
                 dataOutputStream.writeDouble(player.getPosY());
                 dataOutputStream.flush();
@@ -125,11 +192,14 @@ public class Client {
     }
 
 
-    public void listenForMessage() {
+    public void listenForMessage(SnakeGame game) {
         if (socket.isConnected()) {
             try {
-                enemy.setPosX(dataInputStream.readDouble());
-                enemy.setPosY(dataInputStream.readDouble());
+                int clientNum = dataInputStream.readInt();
+
+                game.playerList.get(clientNum+1).setPosX(dataInputStream.readDouble());
+                game.playerList.get(clientNum+1).setPosY(dataInputStream.readDouble());
+
             } catch (IOException e) {
                 closeEverything(socket, dataInputStream, dataOutputStream);
             }

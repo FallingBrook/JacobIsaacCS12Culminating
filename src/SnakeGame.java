@@ -14,49 +14,65 @@ public class SnakeGame extends JPanel implements ActionListener {
     private static final int FRAME_RATE = 100;
 
     private Sprite player1;
-    private Sprite enemy;
+    private Sprite player2;
 
-    private Sprite enemy2;
+    private Sprite player3;
 
-    private Sprite enemy3;
+    private Sprite player4;
+
+    ArrayList<Sprite> playerList = new ArrayList<>();
 
     Client client;
 
 
-    public SnakeGame(final int width, final int height, Sprite player, Sprite enemy, Client client) {
+    public SnakeGame(final int width, final int height, Sprite player1, Sprite player2, Client client) {
         super();
         this.width = width;
         this.height = height;
         setPreferredSize(new Dimension(width, height));
         setBackground(Color.BLACK);
-        player1=player;
-        this.enemy=enemy;
+        this.player1=player1;
+        this.player2=player2;
         this.client = client;
+        playerList.add(player1);
+        playerList.add(player2);
+
+
     }
 
-    public SnakeGame(final int width, final int height, Sprite player, Sprite enemy, Sprite enemy2, Client client){
+    public SnakeGame(final int width, final int height, Sprite player1, Sprite player2, Sprite player3, Client client){
         super();
         this.width = width;
         this.height = height;
         setPreferredSize(new Dimension(width, height));
         setBackground(Color.BLACK);
-        player1=player;
-        this.enemy=enemy;
-        this.enemy2=enemy2;
+        this.player1=player1;
+        this.player2=player2;
+        this.player3=player3;
         this.client = client;
+        playerList.add(player1);
+        playerList.add(player2);
+        playerList.add(player3);
+
+
     }
 
-    public SnakeGame(final int width, final int height, Sprite player, Sprite enemy, Sprite enemy2, Sprite enemy3, Client client){
+    public SnakeGame(final int width, final int height, Sprite player1, Sprite player2, Sprite player3, Sprite player4, Client client){
         super();
         this.width = width;
         this.height = height;
         setPreferredSize(new Dimension(width, height));
         setBackground(Color.BLACK);
-        player1=player;
-        this.enemy=enemy;
-        this.enemy2=enemy2;
-        this.enemy3=enemy3;
+        this.player1=player1;
+        this.player2=player2;
+        this.player3=player3;
+        this.player4=player4;
         this.client = client;
+        playerList.add(player1);
+        playerList.add(player2);
+        playerList.add(player3);
+        playerList.add(player4);
+
     }
 
 
@@ -73,9 +89,6 @@ public class SnakeGame extends JPanel implements ActionListener {
                     player1.getSpriteMovement().setLeftKey(true);
                     player1.setRight(false);
                     player1.ChangeAnim("walk");
-
-
-
                 }
                 else if(e.getKeyCode() == KeyEvent.VK_RIGHT){
                     player1.setRight(true);
@@ -124,9 +137,18 @@ public class SnakeGame extends JPanel implements ActionListener {
         }
 
         graphics.drawImage(player1.getSprite(), (int)player1.getPosX(), (int)player1.getPosY(), null);
-        graphics.setColor(Color.RED);
-        graphics.drawImage(enemy1.getSprite(), (int)enemy1.getPosX(), (int)enemy1.getPosY(), null);
-//        graphics.fillRect((int)enemy1.getPosX(), (int)enemy1.getPosY(),player1.getSize(),player1.getSize());
+        graphics.drawImage(player2.getSprite(), (int)player2.getPosX(), (int)player2.getPosY(), null);
+        if(player3!=null){
+            graphics.drawImage(player3.getSprite(), (int)player3.getPosX(), (int)player3.getPosY(), null);
+        }
+        if(player4!=null){
+            graphics.drawImage(player4.getSprite(), (int)player4.getPosX(), (int)player4.getPosY(), null);
+        }
+
+
+
+
+
 
     }
 
@@ -136,7 +158,7 @@ public class SnakeGame extends JPanel implements ActionListener {
     @Override
     public void actionPerformed(final ActionEvent e) {
         client.sendMessage();
-        client.listenForMessage();
+        client.listenForMessage(this);
         player1.SpritePhysics();
         repaint();
 

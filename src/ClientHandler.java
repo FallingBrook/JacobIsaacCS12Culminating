@@ -50,9 +50,12 @@ public class ClientHandler implements Runnable {
                         }
                     }
 
-                    brodcastNumPlayersAndClientNumber();
+                    broadcastMessage(clientHandlers.size());
+                    brodcastClientNumber();
+
                 }
                 else {
+
                     int messageFromClient = dataInputStream.readInt();
                     broadcastMessage(messageFromClient);
                 }
@@ -63,10 +66,7 @@ public class ClientHandler implements Runnable {
         }
     }
 
-    public void brodcastNumPlayersAndClientNumber(){
-
-        //int players = clientHandlers.size();
-
+    public void brodcastClientNumber(){
 
         for (ClientHandler clientHandler : clientHandlers) {
             try {
