@@ -13,67 +13,18 @@ public class SnakeGame extends JPanel implements ActionListener {
     private final int height;
     private static final int FRAME_RATE = 100;
 
-    private Sprite player1;
-    private Sprite player2;
-
-    private Sprite player3;
-
-    private Sprite player4;
-
-    ArrayList<Sprite> playerList = new ArrayList<>();
-
     Client client;
 
 
-    public SnakeGame(final int width, final int height, Sprite player1, Sprite player2, Client client) {
+    public SnakeGame(final int width, final int height,Client client) {
         super();
         this.width = width;
         this.height = height;
         setPreferredSize(new Dimension(width, height));
         setBackground(Color.BLACK);
-        this.player1=player1;
-        this.player2=player2;
         this.client = client;
-        playerList.add(player1);
-        playerList.add(player2);
-
-
     }
 
-    public SnakeGame(final int width, final int height, Sprite player1, Sprite player2, Sprite player3, Client client){
-        super();
-        this.width = width;
-        this.height = height;
-        setPreferredSize(new Dimension(width, height));
-        setBackground(Color.BLACK);
-        this.player1=player1;
-        this.player2=player2;
-        this.player3=player3;
-        this.client = client;
-        playerList.add(player1);
-        playerList.add(player2);
-        playerList.add(player3);
-
-
-    }
-
-    public SnakeGame(final int width, final int height, Sprite player1, Sprite player2, Sprite player3, Sprite player4, Client client){
-        super();
-        this.width = width;
-        this.height = height;
-        setPreferredSize(new Dimension(width, height));
-        setBackground(Color.BLACK);
-        this.player1=player1;
-        this.player2=player2;
-        this.player3=player3;
-        this.player4=player4;
-        this.client = client;
-        playerList.add(player1);
-        playerList.add(player2);
-        playerList.add(player3);
-        playerList.add(player4);
-
-    }
 
 
 
@@ -85,20 +36,20 @@ public class SnakeGame extends JPanel implements ActionListener {
             @Override
             public void keyPressed(KeyEvent e) {
                 if(e.getKeyCode() == KeyEvent.VK_LEFT){
-                    player1.getSpriteMovement().setDirX(-1);
-                    player1.getSpriteMovement().setLeftKey(true);
-                    player1.setRight(false);
-                    player1.ChangeAnim("walk");
+                    client.getPlayer().getSpriteMovement().setDirX(-1);
+                    client.getPlayer().getSpriteMovement().setLeftKey(true);
+                    client.getPlayer().setRight(false);
+                    client.getPlayer().ChangeAnim("walk");
                 }
                 else if(e.getKeyCode() == KeyEvent.VK_RIGHT){
-                    player1.setRight(true);
-                    player1.getSpriteMovement().setDirX(1);
-                    player1.getSpriteMovement().setRightKey(true);
-                    player1.ChangeAnim("walk");
+                    client.getPlayer().setRight(true);
+                    client.getPlayer().getSpriteMovement().setDirX(1);
+                    client.getPlayer().getSpriteMovement().setRightKey(true);
+                    client.getPlayer().ChangeAnim("walk");
                 }
 
-                if(e.getKeyCode() == KeyEvent.VK_SPACE && player1.getSpriteMovement().canPJump()){
-                    player1.getSpriteMovement().startJump();
+                if(e.getKeyCode() == KeyEvent.VK_SPACE && client.getPlayer().getSpriteMovement().canPJump()){
+                    client.getPlayer().getSpriteMovement().startJump();
 
                 }
 
@@ -106,10 +57,10 @@ public class SnakeGame extends JPanel implements ActionListener {
             @Override
             public void keyReleased(KeyEvent e) {
                 if(e.getKeyCode() == KeyEvent.VK_LEFT){
-                    player1.getSpriteMovement().setLeftKey(false);
+                    client.getPlayer().getSpriteMovement().setLeftKey(false);
                 }
                 else if(e.getKeyCode() == KeyEvent.VK_RIGHT){
-                    player1.getSpriteMovement().setRightKey(false);
+                    client.getPlayer().getSpriteMovement().setRightKey(false);
                 }
             }
         });
@@ -136,19 +87,9 @@ public class SnakeGame extends JPanel implements ActionListener {
             currentHeight += graphics.getFontMetrics().getHeight();
         }
 
-        graphics.drawImage(player1.getSprite(), (int)player1.getPosX(), (int)player1.getPosY(), null);
-        graphics.drawImage(player2.getSprite(), (int)player2.getPosX(), (int)player2.getPosY(), null);
-        if(player3!=null){
-            graphics.drawImage(player3.getSprite(), (int)player3.getPosX(), (int)player3.getPosY(), null);
+        for (Sprite s: client.getAllplayers()){
+            graphics.drawImage(s.getSprite(),(int)s.getPosX(),(int)s.getPosY(),null);
         }
-        if(player4!=null){
-            graphics.drawImage(player4.getSprite(), (int)player4.getPosX(), (int)player4.getPosY(), null);
-        }
-
-
-
-
-
 
     }
 
@@ -157,9 +98,9 @@ public class SnakeGame extends JPanel implements ActionListener {
      */
     @Override
     public void actionPerformed(final ActionEvent e) {
-        client.sendMessage();
-        client.listenForMessage(this);
-        player1.SpritePhysics();
+        client.sendMessage(client);
+        client.listenForMessage(client);
+        client.getPlayer().SpritePhysics();
         repaint();
 
     }

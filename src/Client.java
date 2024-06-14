@@ -1,6 +1,7 @@
 import javax.swing.*;
 import java.io.*;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Client {
@@ -24,6 +25,8 @@ public class Client {
 
     private SnakeGame game;
 
+    private ArrayList<Sprite> allplayers;
+
 
 
 
@@ -43,10 +46,8 @@ public class Client {
             client.clientNum = client.streamReadFirst();
             System.out.println(STR."player\{client.clientNum}");
             playersNum=client.streamReadFirst();
-            System.out.println(playersNum);
-
-
-
+            System.out.println(STR."numplayers: \{playersNum}");
+            client.allplayers=new ArrayList<>();
 
 
 
@@ -56,12 +57,14 @@ public class Client {
                     if(client.clientNum==1){
                         client.player = new Sprite(100,200,100);
                         client.enemy2 = new Sprite(700,200,100);
-                        client.game = new SnakeGame(WIDTH, HEIGHT, client.player,client.enemy2, client);
+                        client.allplayers.add(client.player);
+                        client.allplayers.add(client.enemy2);
                     }
                     else{
                         client.enemy1= new Sprite(100,200,100);
                         client.player = new Sprite(700,200,100);
-                        client.game = new SnakeGame(WIDTH, HEIGHT, client.enemy1, client.player, client);
+                        client.allplayers.add(client.enemy1);
+                        client.allplayers.add(client.player);
                     }
                     break;
 
@@ -71,19 +74,25 @@ public class Client {
                         client.player = new Sprite(100,200,100);
                         client.enemy2 = new Sprite(700,200,100);
                         client.enemy3 = new Sprite(200,200,100);
-                        client.game = new SnakeGame(WIDTH, HEIGHT, client.player, client.enemy2,client.enemy3, client);
+                        client.allplayers.add(client.player);
+                        client.allplayers.add(client.enemy2);
+                        client.allplayers.add(client.enemy3);
                     }
                     else if (client.clientNum==2){
                         client.enemy1= new Sprite(100,200,100);
                         client.player = new Sprite(700,200,100);
                         client.enemy3 = new Sprite(200,200,100);
-                        client.game = new SnakeGame(WIDTH, HEIGHT, client.enemy1, client.player,client.enemy3, client);
+                        client.allplayers.add(client.enemy1);
+                        client.allplayers.add(client.player);
+                        client.allplayers.add(client.enemy3);
                     }
                     else{
                         client.enemy1= new Sprite(100,200,100);
                         client.enemy2 = new Sprite(700,200,100);
                         client.player = new Sprite(200,200,100);
-                        client.game = new SnakeGame(WIDTH, HEIGHT, client.enemy1, client.enemy2,client.player, client);
+                        client.allplayers.add(client.enemy1);
+                        client.allplayers.add(client.enemy2);
+                        client.allplayers.add(client.player);
                     }
                     break;
 
@@ -93,39 +102,46 @@ public class Client {
                         client.enemy2 = new Sprite(700,200,100);
                         client.enemy3 = new Sprite(200,200,100);
                         client.enemy4 = new Sprite(600,200,100);
-                        client.game = new SnakeGame(WIDTH, HEIGHT, client.player, client.enemy2,client.enemy3,client.enemy4,client);
-
+                        client.allplayers.add(client.player);
+                        client.allplayers.add(client.enemy2);
+                        client.allplayers.add(client.enemy3);
+                        client.allplayers.add(client.enemy4);
                     }
                     else if (client.clientNum==2){
                         client.enemy1= new Sprite(100,200,100);
                         client.player = new Sprite(700,200,100);
                         client.enemy3 = new Sprite(200,200,100);
                         client.enemy4 = new Sprite(600,200,100);
-                        client.game = new SnakeGame(WIDTH, HEIGHT, client.enemy1, client.player,client.enemy3,client.enemy4,client);
+                        client.allplayers.add(client.enemy1);
+                        client.allplayers.add(client.player);
+                        client.allplayers.add(client.enemy3);
+                        client.allplayers.add(client.enemy4);
                     }
                     else if (client.clientNum==3){
                         client.enemy1= new Sprite(100,200,100);
                         client.enemy2 = new Sprite(700,200,100);
                         client.player = new Sprite(200,200,100);
                         client.enemy4 = new Sprite(600,200,100);
-                        client.game = new SnakeGame(WIDTH, HEIGHT, client.enemy1, client.enemy2,client.player,client.enemy4,client);
+                        client.allplayers.add(client.enemy1);
+                        client.allplayers.add(client.enemy2);
+                        client.allplayers.add(client.player);
+                        client.allplayers.add(client.enemy4);
                     }
                     else{
                         client.enemy1= new Sprite(100,200,100);
                         client.enemy2 = new Sprite(700,200,100);
                         client.enemy3 = new Sprite(200,200,100);
                         client.player = new Sprite(600,200,100);
-                        client.game = new SnakeGame(WIDTH, HEIGHT, client.enemy1, client.enemy2,client.enemy3,client.player,client);
+                        client.allplayers.add(client.enemy1);
+                        client.allplayers.add(client.enemy2);
+                        client.allplayers.add(client.enemy3);
+                        client.allplayers.add(client.player);
+
                     }
                     break;
             }
 
-
-
-
-
-
-
+            client.game = new SnakeGame(WIDTH, HEIGHT,client);
 
             frame.add(client.game);
             frame.setLocationRelativeTo(null);
@@ -140,6 +156,14 @@ public class Client {
         }
     }
 
+    public Sprite getPlayer(){
+        return player;
+    }
+
+    public ArrayList<Sprite> getAllplayers() {
+        return allplayers;
+    }
+
     public Client(Socket socket) {
         try {
             this.socket = socket;
@@ -152,13 +176,13 @@ public class Client {
 
     }
 
-    public void sendMessage() {
+    public void sendMessage(Client client) {
 
         try {
             if (socket.isConnected()) {
-                dataOutputStream.writeInt(clientNum);
-                dataOutputStream.writeDouble(player.getPosX());
-                dataOutputStream.writeDouble(player.getPosY());
+                dataOutputStream.writeInt(client.clientNum);
+                dataOutputStream.writeDouble(client.player.getPosX());
+                dataOutputStream.writeDouble(client.player.getPosY());
                 dataOutputStream.flush();
             }
         } catch (IOException e) {
@@ -194,14 +218,13 @@ public class Client {
     }
 
 
-    public void listenForMessage(SnakeGame game) {
+    public void listenForMessage(Client client) {
         if (socket.isConnected()) {
             try {
                 int clientNum = dataInputStream.readInt();
-
-                game.playerList.get(clientNum+1).setPosX(dataInputStream.readDouble());
-                game.playerList.get(clientNum+1).setPosY(dataInputStream.readDouble());
-
+                System.out.println(clientNum);
+                client.allplayers.get(clientNum-1).setPosX(dataInputStream.readDouble());
+                client.allplayers.get(clientNum-1).setPosY(dataInputStream.readDouble());
             } catch (IOException e) {
                 closeEverything(socket, dataInputStream, dataOutputStream);
             }
