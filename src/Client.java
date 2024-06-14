@@ -9,9 +9,9 @@ public class Client {
     private DataOutputStream dataOutputStream;
     private DataInputStream dataInputStream;
 
-    int clientNum;
+    private int clientNum;
 
-    int playersNum;
+    private static int playersNum;
 
     private Sprite player;
     private Sprite enemy1;
@@ -41,14 +41,16 @@ public class Client {
             client.readyUp();
 
             client.clientNum = client.streamReadFirst();
-            client.playersNum=client.streamReadFirst();
-
-
             System.out.println(STR."player\{client.clientNum}");
+            playersNum=client.streamReadFirst();
+            System.out.println(playersNum);
 
 
 
-            switch(client.playersNum){
+
+
+
+            switch(playersNum){
                 case 2:
 
                     if(client.clientNum==1){

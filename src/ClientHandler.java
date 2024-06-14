@@ -50,8 +50,9 @@ public class ClientHandler implements Runnable {
                         }
                     }
 
-                    broadcastMessage(clientHandlers.size());
                     brodcastClientNumber();
+                    message(clientHandlers.size());
+
 
                 }
                 else {
@@ -80,6 +81,19 @@ public class ClientHandler implements Runnable {
         }
 
         sent=true;
+
+    }
+
+    public void message(int message){
+        for (ClientHandler clientHandler : clientHandlers) {
+            try {
+                    clientHandler.dataOutputStream.writeInt(message);
+                    clientHandler.dataOutputStream.flush();
+
+            } catch (IOException e) {
+                closeEverything(socket, dataInputStream, dataOutputStream);
+            }
+        }
 
     }
 
