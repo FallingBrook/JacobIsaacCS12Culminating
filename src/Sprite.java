@@ -28,8 +28,11 @@ public class Sprite implements ActionListener {
     private int spriteStartInd;
     private int spriteInd;
     private int currentSpriteIndLength;
+
+    // Idle, walk, jump
     private final int[][] spriteSheetsCoordinates = {{0, 0, 70, 100}, {70, 0, 70, 100}, {0, 100, 70, 100}, {70, 100, 70, 100},
-            {0, 0, 70, 100}, {70, 0, 70, 100}, {140, 0, 70, 100}, {0, 100, 70, 100}, {70, 100, 70, 100}};
+            {0, 0, 70, 100}, {70, 0, 70, 100}, {140, 0, 70, 100}, {0, 100, 70, 100}, {70, 100, 70, 100},
+            {0, 0, 70, 100}};
     private Movement movement;
 
     public Sprite(int x, int y, int size){
@@ -42,6 +45,7 @@ public class Sprite implements ActionListener {
             spriteSheets = new ArrayList<BufferedImage>();
             spriteSheets.add(ImageIO.read(this.getClass().getClassLoader().getResourceAsStream("Idle.png")));
             spriteSheets.add(ImageIO.read(this.getClass().getClassLoader().getResourceAsStream("Walk.png")));
+            spriteSheets.add(ImageIO.read(this.getClass().getClassLoader().getResourceAsStream("Jump.png")));
             currentSpriteSheet = 0;
             ChangeAnim("idle");
             UpdateSprite();
@@ -51,7 +55,7 @@ public class Sprite implements ActionListener {
         }
 
         // calls action performed method
-        new javax.swing.Timer(100, this).start();
+        new javax.swing.Timer(75, this).start();
     }
 
     public Image getSprite(){
@@ -90,16 +94,16 @@ public class Sprite implements ActionListener {
     public void UpdateSprite(){
         spriteInd++;
         if(spriteInd > currentSpriteIndLength)
-            spriteInd = spriteStartInd;
+            spriteInd = 0;
 
         if(right) {
-            currentSprite=spriteSheets.get(currentSpriteSheet).getSubimage(spriteSheetsCoordinates[spriteInd][0],
-                    spriteSheetsCoordinates[spriteInd][1],
-                    spriteSheetsCoordinates[spriteInd][2],
-                    spriteSheetsCoordinates[spriteInd][3]);
+            currentSprite=spriteSheets.get(currentSpriteSheet).getSubimage(spriteSheetsCoordinates[spriteInd + spriteStartInd][0],
+                    spriteSheetsCoordinates[spriteInd + spriteStartInd][1],
+                    spriteSheetsCoordinates[spriteInd + spriteStartInd][2],
+                    spriteSheetsCoordinates[spriteInd + spriteStartInd][3]);
         }
         else{
-            currentSprite=getImageFlip();
+            getImageFlip();
 
         }
     }
@@ -109,18 +113,25 @@ public class Sprite implements ActionListener {
 
     }
 
-    public Image getImageFlip(){
-
+    public void getImageFlip(){
+        spriteInd = 0;
         BufferedImage temp = flipImage(spriteSheets.get(currentSpriteSheet));
 
-        return
-        temp.getSubimage(spriteSheetsCoordinates[spriteInd][0],
-                spriteSheetsCoordinates[spriteInd][1],
-                spriteSheetsCoordinates[spriteInd][2],
-                spriteSheetsCoordinates[spriteInd][3]);
+
+        currentSprite = temp.getSubimage(spriteSheetsCoordinates[spriteInd + spriteStartInd][0],
+                spriteSheetsCoordinates[spriteInd + spriteStartInd][1],
+                spriteSheetsCoordinates[spriteInd + spriteStartInd][2],
+                spriteSheetsCoordinates[spriteInd + spriteStartInd][3]);
+//        currentSprite = spriteSheets.get(currentSpriteSheet).getSubimage(spriteSheetsCoordinates[spriteInd + spriteStartInd][0],
+//                spriteSheetsCoordinates[spriteInd + spriteStartInd][1],
+//                spriteSheetsCoordinates[spriteInd + spriteStartInd][2],
+//                spriteSheetsCoordinates[spriteInd + spriteStartInd][3]);
+
     }
 
     public void ChangeAnim(String newAnim){
+        if(currentAnim.equals(newAnim))
+            return;
         currentAnim = newAnim;
         switch (currentAnim){
             case "idle":
@@ -133,6 +144,11 @@ public class Sprite implements ActionListener {
                 currentSpriteIndLength = 4;
                 spriteStartInd = 4;
                 break;
+            case "jump":
+                currentSpriteSheet = 2;
+                currentSpriteIndLength = 0;
+                spriteStartInd = 9;
+                break;
         }
         spriteInd = 0;
     }
@@ -144,7 +160,6 @@ public class Sprite implements ActionListener {
         Graphics2D g = flippedImage.createGraphics();
         g.drawImage(img,0,0,width,height,width,0,0,height,null);
         g.dispose();
-        spriteInd = 0;
         return flippedImage;
     }
 

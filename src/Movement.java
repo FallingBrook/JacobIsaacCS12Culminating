@@ -4,7 +4,7 @@ import java.nio.file.Paths;
 
 public class Movement{
     // region movement var
-    private int moveSpeed = 15;
+    private double moveSpeed = 6;
     private double moveAccel = 0.6;
     private double moveDeccel = 1;
     private int dir = 0;
@@ -78,11 +78,20 @@ public class Movement{
         if(!leftPressed && !rightPressed){
             dir = 0;
            player.ChangeAnim("idle");
-            System.out.println("1");
-       // }
-//        else{
-//            player.ChangeAnim("idle");
        }
+        if(!isGrounded){
+            player.ChangeAnim("jump");
+        }
+        else if(isGrounded){
+            if(!leftPressed && !rightPressed){
+                dir = 0;
+                player.ChangeAnim("idle");
+            }
+            else{
+                player.ChangeAnim("walk");
+            }
+        }
+
         if(dir > 0 && veloX < moveSpeed){
             veloX += moveAccel;
 
