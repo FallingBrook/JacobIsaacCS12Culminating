@@ -135,11 +135,15 @@ public class SnakeGame extends JPanel implements ActionListener {
     }
 
     public void onPlatform(){
-        if((player1.getPosX()>180&&player1.getPosX()<300)||(player1.getPosX()>500&&player1.getPosX()<620)){
-            if(player1.getPosY()+player1.height>430&&player1.getSpriteMovement().getVeloY()>=0){
+        if(((player1.getPosX()+player1.width/2)>180&&(player1.getPosX()+player1.width/2)<300)||((player1.getPosX()+player1.width/2)>500&&(player1.getPosX()+player1.width/2)<620)){
+            if((player1.getPosY()+player1.height>425&&player1.getPosY()+player1.height<435)&&player1.getSpriteMovement().getVeloY()>=0){
                 player1.setPosY(370);
                 player1.getSpriteMovement().setVeloY(0);
+                player1.getSpriteMovement().setGrounded(true);
             }
+        }
+        else if(player1.getPosY()+ player1.height<600){
+            player1.getSpriteMovement().setGrounded(false);
         }
     }
 

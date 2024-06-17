@@ -33,9 +33,15 @@ public class Movement{
     private int maxCombo = 3;
     private double comboCldwn = 0.75;
     private double comboCldwnCounter;
+
     public Movement(Sprite player){
         this.player = player;
     }
+
+    public void setGrounded(boolean b){
+        isGrounded=b;
+    }
+
     public void setAttacking(boolean TorF){
         attack = TorF;
         isAttacking = TorF;
