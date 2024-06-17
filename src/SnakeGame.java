@@ -18,6 +18,12 @@ public class SnakeGame extends JPanel implements ActionListener {
 
     private BufferedImage healthBar = ImageIO.read(this.getClass().getClassLoader().getResourceAsStream("healthBar.png"));
 
+    private Image background = ImageIO.read(this.getClass().getClassLoader().getResourceAsStream("background2.png"));
+
+    private Image winScreen =  ImageIO.read(this.getClass().getClassLoader().getResourceAsStream("Win.png"));
+
+    private Image loseScreen =  ImageIO.read(this.getClass().getClassLoader().getResourceAsStream("Lose.png"));
+
 
     private Sprite player1 = new Sprite(50,50, 100);
     private Sprite enemy1 = new Sprite(50,50, 100);
@@ -144,20 +150,7 @@ public class SnakeGame extends JPanel implements ActionListener {
                 }
             }
             else {
-                graphics.setColor(Color.WHITE);
-                graphics.setFont(graphics.getFont().deriveFont(30F));
-                int currentHeight = height / 4;
-                final var graphics2D = (Graphics2D) graphics;
-                final var frc = graphics2D.getFontRenderContext();
-                String message = "Isaac>Jacob game\nPress space to play!";
-                for (final var line : message.split("\n")) {
-                    final var layout = new TextLayout(line, graphics.getFont(), frc);
-                    final var bounds = layout.getBounds();
-                    final var targetWidth = (float) (width - bounds.getWidth()) / 2;
-                    layout.draw(graphics2D, targetWidth, currentHeight);
-                    currentHeight += graphics.getFontMetrics().getHeight();
-                }
-
+                graphics.drawImage(background,0,0,null);
                 graphics.drawImage(player1.getSprite(), (int) player1.getPosX(), (int) player1.getPosY(), null);
                 graphics.setColor(Color.GREEN);
                 graphics.drawImage(healthBar.getSubimage(0, 0, (int) (4 * player1.getHealth()), 9), (int) player1.getPosX(), (int) player1.getPosY() - 20, null);
@@ -168,7 +161,13 @@ public class SnakeGame extends JPanel implements ActionListener {
             }
         }
         catch(RasterFormatException r){
-            System.out.println("game over close all the shit and say who won");
+            if (player1.getHealth()>0){
+                graphics.drawImage(winScreen,0,0,null);
+            }
+            else{
+                graphics.drawImage(loseScreen,0,0,null);
+
+            }
 
         }
     }
