@@ -24,7 +24,7 @@ public class ClientHandler implements Runnable {
     public void run() {
         while (socket.isConnected()) {
             try {
-                int messageFromClient = dataInputStream.readInt();
+                double messageFromClient = dataInputStream.readDouble();
                 broadcastMessage(messageFromClient);
             } catch (IOException e) {
                 closeEverything(socket, dataInputStream, dataOutputStream);
@@ -33,11 +33,11 @@ public class ClientHandler implements Runnable {
         }
     }
 
-    public void broadcastMessage(int messageToSend) {
+    public void broadcastMessage(double messageToSend) {
         for (ClientHandler clientHandler : clientHandlers) {
             try {
                 if (!clientHandler.equals(this)) {
-                    clientHandler.dataOutputStream.writeInt(messageToSend);
+                    clientHandler.dataOutputStream.writeDouble(messageToSend);
                     clientHandler.dataOutputStream.flush();
                 }
             } catch (IOException e) {
