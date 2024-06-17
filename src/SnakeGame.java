@@ -22,6 +22,10 @@ public class SnakeGame extends JPanel implements ActionListener {
     private Sprite player1 = new Sprite(50,50, 100);
     private Sprite enemy1 = new Sprite(50,50, 100);
 
+    private int otherReadyScreen;
+
+    private int readyScreen=0;
+
     Client client;
 
     private int screenType = 0;
@@ -37,6 +41,7 @@ public class SnakeGame extends JPanel implements ActionListener {
         this.client = client;
     }
 
+
     public void startGame(){
         setFocusable(true);
         setFocusTraversalKeysEnabled(false);
@@ -44,6 +49,11 @@ public class SnakeGame extends JPanel implements ActionListener {
         addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
+
+                if(e.getKeyCode()==KeyEvent.VK_R){
+                        readyScreen = 1;
+                }
+
                 if(e.getKeyCode() == KeyEvent.VK_LEFT){
                     player1.getSpriteMovement().setDirX(-1);
                     player1.getSpriteMovement().setLeftKey(true);
@@ -84,27 +94,19 @@ public class SnakeGame extends JPanel implements ActionListener {
             }
         });
 
-        addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                System.out.println("SDDSSDDD");
-                if(screenType == 0){
-                    System.out.println("DSD");
-                    if(e.getX() > 460 && e.getX() < 650 && e.getY() > 280 && e.getY() < 330)
-                        System.out.println("IN");
-                        screenType = 1;
-                }
-
-            }
-        });
-        // calls action performed method
         new Timer(1000 / FRAME_RATE, this).start();
 
     }
 
-    public int getScreenType(){
-        return screenType;
+
+    public int getReadyScreen(){
+        return readyScreen;
     }
+
+    public void setOtherReadyScreen(int r){
+        otherReadyScreen=r;
+    }
+
     public void setScreenType(int screenType){
         this.screenType = screenType;
     }
@@ -140,29 +142,30 @@ public class SnakeGame extends JPanel implements ActionListener {
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
-                return;
             }
-            graphics.setColor(Color.WHITE);
-            graphics.setFont(graphics.getFont().deriveFont(30F));
-            int currentHeight = height / 4;
-            final var graphics2D = (Graphics2D) graphics;
-            final var frc = graphics2D.getFontRenderContext();
-            String message = "Isaac>Jacob game\nPress space to play!";
-            for (final var line : message.split("\n")) {
-                final var layout = new TextLayout(line, graphics.getFont(), frc);
-                final var bounds = layout.getBounds();
-                final var targetWidth = (float) (width - bounds.getWidth()) / 2;
-                layout.draw(graphics2D, targetWidth, currentHeight);
-                currentHeight += graphics.getFontMetrics().getHeight();
-            }
+            else {
+                graphics.setColor(Color.WHITE);
+                graphics.setFont(graphics.getFont().deriveFont(30F));
+                int currentHeight = height / 4;
+                final var graphics2D = (Graphics2D) graphics;
+                final var frc = graphics2D.getFontRenderContext();
+                String message = "Isaac>Jacob game\nPress space to play!";
+                for (final var line : message.split("\n")) {
+                    final var layout = new TextLayout(line, graphics.getFont(), frc);
+                    final var bounds = layout.getBounds();
+                    final var targetWidth = (float) (width - bounds.getWidth()) / 2;
+                    layout.draw(graphics2D, targetWidth, currentHeight);
+                    currentHeight += graphics.getFontMetrics().getHeight();
+                }
 
-            graphics.drawImage(player1.getSprite(), (int) player1.getPosX(), (int) player1.getPosY(), null);
-            graphics.setColor(Color.GREEN);
-            graphics.drawImage(healthBar.getSubimage(0, 0, (int) (4 * player1.getHealth()), 9), (int) player1.getPosX(), (int) player1.getPosY() - 20, null);
-            graphics.drawImage(healthBar.getSubimage(0, 0, (int) (4 * enemy1.getHealth()), 9), (int) enemy1.getPosX() + 15, (int) enemy1.getPosY() - 20, null);
-            graphics.drawImage(enemy1.getSprite(), (int) enemy1.getPosX(), (int) enemy1.getPosY(), null);
-            graphics.drawImage(platform, 180, 430, null);
-            graphics.drawImage(platform, 500, 430, null);
+                graphics.drawImage(player1.getSprite(), (int) player1.getPosX(), (int) player1.getPosY(), null);
+                graphics.setColor(Color.GREEN);
+                graphics.drawImage(healthBar.getSubimage(0, 0, (int) (4 * player1.getHealth()), 9), (int) player1.getPosX(), (int) player1.getPosY() - 20, null);
+                graphics.drawImage(healthBar.getSubimage(0, 0, (int) (4 * enemy1.getHealth()), 9), (int) enemy1.getPosX() + 15, (int) enemy1.getPosY() - 20, null);
+                graphics.drawImage(enemy1.getSprite(), (int) enemy1.getPosX(), (int) enemy1.getPosY(), null);
+                graphics.drawImage(platform, 180, 430, null);
+                graphics.drawImage(platform, 500, 430, null);
+            }
         }
         catch(RasterFormatException r){
             System.out.println("game over close all the shit and say who won");
@@ -195,11 +198,19 @@ public class SnakeGame extends JPanel implements ActionListener {
      */
     @Override
     public void actionPerformed(final ActionEvent e) {
-        client.sendMessage(client);
-        client.listenForMessage();
+
+        if(readyScreen==1&&otherReadyScreen==1){
+            screenType=1;
+        }
+        client.sendMessage(client,this);
+        client.listenForMessage(this);
         player1.SpritePhysics();
         onPlatform();
+
+
+
         repaint();
+
     }
 
 

@@ -26,6 +26,7 @@ public class ClientHandler implements Runnable {
             try {
                 double messageFromClient = dataInputStream.readDouble();
                 broadcastMessage(messageFromClient);
+                System.out.println("brodcasted");
             } catch (IOException e) {
                 closeEverything(socket, dataInputStream, dataOutputStream);
                 break;

@@ -34,22 +34,8 @@ public class Client {
 
             final JFrame frame = new JFrame("Jacob is super cool Game");
             frame.setSize(WIDTH, HEIGHT);
-            Client client = new Client(new Socket("10.0.0.58", 2831));
+            Client client = new Client(new Socket("10.88.111.5", 2831));
             client.Frame=frame;
-            StartMenu menu = new StartMenu(WIDTH,HEIGHT,client);
-            StartMenu menu1 = new StartMenu(menu);
-
-
-            frame.add(menu);
-            frame.setLocationRelativeTo(null);
-            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            frame.setResizable(false);
-            frame.setVisible(true);
-            frame.pack();
-            menu.run();
-            frame.remove(menu);
-
-
             client.player = new Sprite(100, 200, 100);
             client.enemy = new Sprite(100, 200, 100);
             client.game = new SnakeGame(WIDTH, HEIGHT, client.player, client.enemy, client);
@@ -99,7 +85,7 @@ public class Client {
 
     }
 
-    public void sendMessage(Client client) {
+    public void sendMessage(Client client,SnakeGame game) {
 
         try {
             if (socket.isConnected()) {
@@ -112,7 +98,7 @@ public class Client {
                     dataOutputStream.writeDouble(2);
                 }
                 dataOutputStream.writeDouble(enemy.getHealth());
-//                dataOutputStream.writeInt(0);
+                dataOutputStream.writeDouble(game.getReadyScreen());
                 dataOutputStream.flush();
             }
         } catch (IOException e) {
@@ -120,15 +106,14 @@ public class Client {
         }
     }
 
-    public void listenForMessage() {
+    public void listenForMessage(SnakeGame game) {
         if (socket.isConnected()) {
             try {
                 enemy.setPosX(dataInputStream.readDouble());
                 enemy.setPosY(dataInputStream.readDouble());
                 enemy.setRight(dataInputStream.readDouble());
                 player.setHealth((int)dataInputStream.readDouble());
-//                System.out.println(dataInputStream.readInt());
-//                game.setScreenType(dataInputStream.readInt());
+                game.setOtherReadyScreen((int)dataInputStream.readDouble());
             } catch (IOException e) {
                 closeEverything(socket, dataInputStream, dataOutputStream);
             }
