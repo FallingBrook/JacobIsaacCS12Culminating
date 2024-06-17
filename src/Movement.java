@@ -1,10 +1,11 @@
+import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.nio.file.Paths;
 
 public class Movement{
     // region movement var
-    private int moveSpeed = 15;
+    private int moveSpeed = 6;
     private double moveAccel = 0.6;
     private double moveDeccel = 1;
     private int dir = 0;
@@ -25,10 +26,23 @@ public class Movement{
 
     private boolean leftPressed;
     private boolean rightPressed;
+
+    private boolean isAttacking = false;
+    private boolean attack = false;
+    private int attackNum = 1;
+    private int maxCombo = 3;
+    private double comboCldwn = 0.75;
+    private double comboCldwnCounter;
     public Movement(Sprite player){
         this.player = player;
     }
-
+    public void setAttacking(boolean TorF){
+        attack = TorF;
+        isAttacking = TorF;
+    }
+    public boolean getAttacking(){
+        return isAttacking;
+    }
     public void setLeftKey(boolean bool){
         leftPressed = bool;
     }
@@ -73,14 +87,38 @@ public class Movement{
             canJump = true;
         }
     }
+    public void DetAnim(){
+        comboCldwnCounter-=0.02;
+        if(!isGrounded){
+            player.ChangeAnim("jump");
+        }
+        else if(isAttacking) {
+            if(!attack)
+                return;
+            if(attackNum > maxCombo || comboCldwnCounter <= 0)
+                attackNum = 1;
+            if(attackNum == 1)
+                player.ChangeAnim("punch1");
+            else if(attackNum == 2 && comboCldwnCounter > 0)
+                player.ChangeAnim("punch2");
+            else if(attackNum == 3 && comboCldwnCounter > 0)
+                player.ChangeAnim("kick1");
+            comboCldwnCounter = comboCldwn;
+            attackNum++;
+            attack = false;
+        }
+        else if(!leftPressed && !rightPressed){
+            player.ChangeAnim("idle");
+        }
+        else if(leftPressed || rightPressed){
+            player.ChangeAnim("walk");
+        }
+
+    }
 
     public void HorizontalMovement(int dir){
-        if(!leftPressed && !rightPressed){
+        if(!leftPressed && !rightPressed || isAttacking){
             dir = 0;
-            player.ChangeAnim("idle");
-            // }
-//        else{
-//            player.ChangeAnim("idle");
         }
         if(dir > 0 && veloX < moveSpeed){
             veloX += moveAccel;
@@ -114,7 +152,5 @@ public class Movement{
         player.setPosX((player.getPosX() + veloX));
         player.setPosY((player.getPosY() + veloY));
     }
-
-
 
 }

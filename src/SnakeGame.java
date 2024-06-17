@@ -41,17 +41,12 @@ public class SnakeGame extends JPanel implements ActionListener {
                     player1.getSpriteMovement().setDirX(-1);
                     player1.getSpriteMovement().setLeftKey(true);
                     player1.setRight(2);
-                    player1.ChangeAnim("walk");
-
-
 
                 }
                 else if(e.getKeyCode() == KeyEvent.VK_RIGHT){
                     player1.setRight(1);
                     player1.getSpriteMovement().setDirX(1);
                     player1.getSpriteMovement().setRightKey(true);
-                    player1.ChangeAnim("walk");
-                    System.out.println("right pressed");
                 }
 
                 if(e.getKeyCode() == KeyEvent.VK_SPACE && player1.getSpriteMovement().canPJump()){
@@ -60,8 +55,10 @@ public class SnakeGame extends JPanel implements ActionListener {
                 }
 
                 if(e.getKeyCode() == KeyEvent.VK_F){
-                    //punch anim
-                    if(checkCollision()&&player1.getCurrentAnim()!="punch"&&directionforPunch()){
+                    if(player1.getSpriteMovement().getAttacking())
+                        return;
+                    player1.getSpriteMovement().setAttacking(true);
+                    if(checkCollision()&&directionforPunch()){
                         enemy1.setHealth(1);
                     }
                 }
@@ -132,9 +129,9 @@ public class SnakeGame extends JPanel implements ActionListener {
 
     public boolean checkCollision(){
         if(player1.intersects(enemy1)){
-            System.out.println("hits");
+            return true;
         }
-        return true;
+        return false;
     }
 
     /** game loop. called according to frame rate

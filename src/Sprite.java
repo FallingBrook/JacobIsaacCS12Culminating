@@ -3,11 +3,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Timer;
-import java.util.TimerTask;
 
 public class Sprite extends Rectangle implements ActionListener {
 
@@ -36,7 +32,11 @@ public class Sprite extends Rectangle implements ActionListener {
     private int spriteInd;
     private int currentSpriteIndLength;
     private final int[][] spriteSheetsCoordinates = {{0, 0, 70, 100}, {70, 0, 70, 100}, {0, 100, 70, 100}, {70, 100, 70, 100},
-            {0, 0, 70, 100}, {70, 0, 70, 100}, {140, 0, 70, 100}, {0, 100, 70, 100}, {70, 100, 70, 100}};
+            {0, 0, 70, 100}, {70, 0, 70, 100}, {140, 0, 70, 100}, {0, 100, 70, 100}, {70, 100, 70, 100},
+            {0, 0, 70, 100},
+            {0, 0, 100, 100}, {100, 0, 100, 100}, {200, 0, 100, 100}, {300, 0, 100, 100}, {400, 0, 100, 100},
+            {0, 0, 100, 100}, {100, 0, 100, 100}, {200, 0, 100, 100},
+            {400, 0, 100, 100}, {300, 0, 100, 100}, {200, 0, 100, 100}, {100, 0, 100, 100}, {0, 0, 100, 100}};
     private Movement movement;
 
     public Sprite(int x, int y, int size){
@@ -52,8 +52,13 @@ public class Sprite extends Rectangle implements ActionListener {
             spriteSheets = new ArrayList<BufferedImage>();
             spriteSheets.add(ImageIO.read(this.getClass().getClassLoader().getResourceAsStream("Idle.png")));
             spriteSheets.add(ImageIO.read(this.getClass().getClassLoader().getResourceAsStream("Walk.png")));
+            spriteSheets.add(ImageIO.read(this.getClass().getClassLoader().getResourceAsStream("Jump.png")));
+            spriteSheets.add(ImageIO.read(this.getClass().getClassLoader().getResourceAsStream("Punch1.png")));
+            spriteSheets.add(ImageIO.read(this.getClass().getClassLoader().getResourceAsStream("Punch2.png")));
+            spriteSheets.add(ImageIO.read(this.getClass().getClassLoader().getResourceAsStream("Kick1.png")));
+            System.out.println(spriteSheets.get(3).getWidth());
             currentSpriteSheet = 0;
-            ChangeAnim("idle");
+//            ChangeAnim("idle");
             UpdateSprite();
         }
         catch (Exception e){
@@ -61,7 +66,7 @@ public class Sprite extends Rectangle implements ActionListener {
         }
 
         // calls action performed method
-        new javax.swing.Timer(100, this).start();
+        new javax.swing.Timer(70, this).start();
     }
 
     public void setHealth(int damage){
@@ -112,24 +117,27 @@ public class Sprite extends Rectangle implements ActionListener {
 
     public void SpritePhysics(){
         movement.UpdateMovement();
+        movement.DetAnim();
     }
 
     public void UpdateSprite(){
         spriteInd++;
         if(spriteInd > currentSpriteIndLength)
-            spriteInd = spriteStartInd;
-
+            spriteInd = 0;
+        if(spriteInd == currentSpriteIndLength)
+            movement.setAttacking(false);
         if(right==1) {
-            currentSprite=spriteSheets.get(currentSpriteSheet).getSubimage(spriteSheetsCoordinates[spriteInd][0],
-                    spriteSheetsCoordinates[spriteInd][1],
-                    spriteSheetsCoordinates[spriteInd][2],
-                    spriteSheetsCoordinates[spriteInd][3]);
+            currentSprite=spriteSheets.get(currentSpriteSheet).getSubimage(spriteSheetsCoordinates[spriteInd + spriteStartInd][0],
+                    spriteSheetsCoordinates[spriteInd + spriteStartInd][1],
+                    spriteSheetsCoordinates[spriteInd + spriteStartInd][2],
+                    spriteSheetsCoordinates[spriteInd + spriteStartInd][3]);
         }
         else{
-            currentSprite=getImageFlip();
+            getImageFlip();
 
         }
     }
+
 
     public void setRight(double d){
         right = d;
@@ -140,18 +148,18 @@ public class Sprite extends Rectangle implements ActionListener {
         return right;
     }
 
-    public Image getImageFlip(){
+    public void getImageFlip(){
 
         BufferedImage temp = flipImage(spriteSheets.get(currentSpriteSheet));
-
-        return
-                temp.getSubimage(spriteSheetsCoordinates[spriteInd][0],
-                        spriteSheetsCoordinates[spriteInd][1],
-                        spriteSheetsCoordinates[spriteInd][2],
-                        spriteSheetsCoordinates[spriteInd][3]);
+        currentSprite = temp.getSubimage(spriteSheetsCoordinates[spriteInd + spriteStartInd][0],
+                        spriteSheetsCoordinates[spriteInd + spriteStartInd][1],
+                        spriteSheetsCoordinates[spriteInd + spriteStartInd][2],
+                        spriteSheetsCoordinates[spriteInd + spriteStartInd][3]);
     }
 
     public void ChangeAnim(String newAnim){
+        if(currentAnim.equals(newAnim))
+            return;
         currentAnim = newAnim;
         switch (currentAnim){
             case "idle":
@@ -163,6 +171,26 @@ public class Sprite extends Rectangle implements ActionListener {
                 currentSpriteSheet = 1;
                 currentSpriteIndLength = 4;
                 spriteStartInd = 4;
+                break;
+            case "jump":
+                currentSpriteSheet = 2;
+                currentSpriteIndLength = 0;
+                spriteStartInd = 9;
+                break;
+            case "punch2":
+                currentSpriteSheet = 4;
+                currentSpriteIndLength = 4;
+                spriteStartInd = 10;
+                break;
+            case "punch1":
+                currentSpriteSheet = 3;
+                currentSpriteIndLength = 2;
+                spriteStartInd = 15;
+                break;
+            case "kick1":
+                currentSpriteSheet = 5;
+                currentSpriteIndLength = 4;
+                spriteStartInd = 18;
                 break;
         }
         spriteInd = 0;
@@ -179,9 +207,10 @@ public class Sprite extends Rectangle implements ActionListener {
         Graphics2D g = flippedImage.createGraphics();
         g.drawImage(img,0,0,width,height,width,0,0,height,null);
         g.dispose();
-        spriteInd = 0;
         return flippedImage;
     }
+
+
 
     @Override
     public void actionPerformed(ActionEvent e) {
