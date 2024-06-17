@@ -61,12 +61,34 @@ public class SnakeGame extends JPanel implements ActionListener {
 
                 if(e.getKeyCode() == KeyEvent.VK_F){
                     //punch anim
-                    if(checkCollision()&&player1.getCurrentAnim()!="punch"){
+                    if(checkCollision()&&player1.getCurrentAnim()!="punch"&&directionforPunch()){
                         enemy1.setHealth(1);
                     }
                 }
 
             }
+
+            public boolean directionforPunch(){
+                if(player1.getRight()==1){
+                    if(player1.getPosX()<enemy1.getPosX()){
+                        return true;
+                    }
+                    else{
+                        return false;
+                    }
+
+                }
+                else{
+                    if(player1.getPosX()<enemy1.getPosX()){
+                        return false;
+                    }
+                    else{
+                        return true;
+                    }
+
+                }
+            }
+
             @Override
             public void keyReleased(KeyEvent e) {
                 if(e.getKeyCode() == KeyEvent.VK_LEFT){

@@ -69,6 +69,10 @@ public class Sprite extends Rectangle implements ActionListener {
 
     }
 
+
+
+
+
     public int getHealth(){
         return health;
     }
