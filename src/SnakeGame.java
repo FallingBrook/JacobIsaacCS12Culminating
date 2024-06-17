@@ -1,10 +1,7 @@
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
+import java.awt.event.*;
 import java.awt.font.TextLayout;
 import java.awt.image.BufferedImage;
 import java.awt.image.RasterFormatException;
@@ -27,6 +24,7 @@ public class SnakeGame extends JPanel implements ActionListener {
 
     Client client;
 
+    private int screenType = 0;
 
     public SnakeGame(final int width, final int height, Sprite player, Sprite enemy, Client client) throws IOException {
         super();
@@ -86,9 +84,29 @@ public class SnakeGame extends JPanel implements ActionListener {
             }
         });
 
+        addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                System.out.println("SDDSSDDD");
+                if(screenType == 0){
+                    System.out.println("DSD");
+                    if(e.getX() > 460 && e.getX() < 650 && e.getY() > 280 && e.getY() < 330)
+                        System.out.println("IN");
+                        screenType = 1;
+                }
+
+            }
+        });
         // calls action performed method
         new Timer(1000 / FRAME_RATE, this).start();
 
+    }
+
+    public int getScreenType(){
+        return screenType;
+    }
+    public void setScreenType(int screenType){
+        this.screenType = screenType;
     }
 
     public boolean directionforPunch(){
@@ -116,6 +134,14 @@ public class SnakeGame extends JPanel implements ActionListener {
     protected void paintComponent(Graphics graphics) {
         try {
             super.paintComponent(graphics);
+            if(screenType == 0){
+                try {
+                    graphics.drawImage(ImageIO.read(this.getClass().getClassLoader().getResourceAsStream("StartScreen.png")), 0, 0, null);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+                return;
+            }
             graphics.setColor(Color.WHITE);
             graphics.setFont(graphics.getFont().deriveFont(30F));
             int currentHeight = height / 4;

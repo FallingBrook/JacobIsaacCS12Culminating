@@ -34,7 +34,7 @@ public class Client {
 
             final JFrame frame = new JFrame("Jacob is super cool Game");
             frame.setSize(WIDTH, HEIGHT);
-            Client client = new Client(new Socket("10.88.111.5", 2831));
+            Client client = new Client(new Socket("10.0.0.58", 2831));
             client.Frame=frame;
             StartMenu menu = new StartMenu(WIDTH,HEIGHT,client);
             StartMenu menu1 = new StartMenu(menu);
@@ -112,6 +112,7 @@ public class Client {
                     dataOutputStream.writeDouble(2);
                 }
                 dataOutputStream.writeDouble(enemy.getHealth());
+//                dataOutputStream.writeInt(0);
                 dataOutputStream.flush();
             }
         } catch (IOException e) {
@@ -126,6 +127,8 @@ public class Client {
                 enemy.setPosY(dataInputStream.readDouble());
                 enemy.setRight(dataInputStream.readDouble());
                 player.setHealth((int)dataInputStream.readDouble());
+//                System.out.println(dataInputStream.readInt());
+//                game.setScreenType(dataInputStream.readInt());
             } catch (IOException e) {
                 closeEverything(socket, dataInputStream, dataOutputStream);
             }
