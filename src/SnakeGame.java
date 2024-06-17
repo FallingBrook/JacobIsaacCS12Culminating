@@ -1,3 +1,4 @@
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -5,6 +6,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.font.TextLayout;
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class SnakeGame extends JPanel implements ActionListener {
@@ -13,13 +15,16 @@ public class SnakeGame extends JPanel implements ActionListener {
     private final int height;
     private static final int FRAME_RATE = 300;
 
+    private Image platform = ImageIO.read(this.getClass().getClassLoader().getResourceAsStream("platform.png"));
+
+
     private Sprite player1 = new Sprite(50,50, 100);
     private Sprite enemy1 = new Sprite(50,50, 100);
 
     Client client;
 
 
-    public SnakeGame(final int width, final int height, Sprite player, Sprite enemy, Client client) {
+    public SnakeGame(final int width, final int height, Sprite player, Sprite enemy, Client client) throws IOException {
         super();
         this.width = width;
         this.height = height;
@@ -125,6 +130,17 @@ public class SnakeGame extends JPanel implements ActionListener {
         graphics.drawImage(enemy1.getSprite(), (int)enemy1.getPosX(), (int)enemy1.getPosY(), null);
         graphics.setColor(Color.RED);
         graphics.drawRect((int)enemy1.getPosX(), (int)enemy1.getPosY()-20,5*enemy1.getHealth(),10);
+        graphics.drawImage(platform,180,430,null);
+        graphics.drawImage(platform,500,430,null);
+    }
+
+    public void onPlatform(){
+        if((player1.getPosX()>180&&player1.getPosX()<300)||(player1.getPosX()>500&&player1.getPosX()<620)){
+            if(player1.getPosY()+player1.height>430&&player1.getSpriteMovement().getVeloY()>=0){
+                player1.setPosY(370);
+                player1.getSpriteMovement().setVeloY(0);
+            }
+        }
     }
 
     public boolean checkCollision(){
@@ -142,6 +158,7 @@ public class SnakeGame extends JPanel implements ActionListener {
         client.sendMessage(client);
         client.listenForMessage();
         player1.SpritePhysics();
+        onPlatform();
         repaint();
     }
 
