@@ -6,6 +6,8 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.font.TextLayout;
+import java.awt.image.BufferedImage;
+import java.awt.image.RasterFormatException;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -16,6 +18,8 @@ public class SnakeGame extends JPanel implements ActionListener {
     private static final int FRAME_RATE = 300;
 
     private Image platform = ImageIO.read(this.getClass().getClassLoader().getResourceAsStream("platform.png"));
+
+    private BufferedImage healthBar = ImageIO.read(this.getClass().getClassLoader().getResourceAsStream("healthBar.png"));
 
 
     private Sprite player1 = new Sprite(50,50, 100);
@@ -64,7 +68,7 @@ public class SnakeGame extends JPanel implements ActionListener {
                         return;
                     player1.getSpriteMovement().setAttacking(true);
                     if(checkCollision()&&directionforPunch()){
-                        enemy1.setHealth(1);
+                        enemy1.setHealth(enemy1.getHealth()-1);
                     }
                 }
 
@@ -109,29 +113,34 @@ public class SnakeGame extends JPanel implements ActionListener {
 
     @Override
     protected void paintComponent(Graphics graphics) {
-        super.paintComponent(graphics);
-        graphics.setColor(Color.WHITE);
-        graphics.setFont(graphics.getFont().deriveFont(30F));
-        int currentHeight = height/4;
-        final var graphics2D = (Graphics2D) graphics;
-        final var frc = graphics2D.getFontRenderContext();
-        String message = "Isaac>Jacob game\nPress space to play!";
-        for(final var line : message.split("\n")){
-            final var layout = new TextLayout(line, graphics.getFont(), frc);
-            final var bounds = layout.getBounds();
-            final var targetWidth = (float)(width - bounds.getWidth()) / 2;
-            layout.draw(graphics2D, targetWidth, currentHeight);
-            currentHeight += graphics.getFontMetrics().getHeight();
-        }
+        try {
+            super.paintComponent(graphics);
+            graphics.setColor(Color.WHITE);
+            graphics.setFont(graphics.getFont().deriveFont(30F));
+            int currentHeight = height / 4;
+            final var graphics2D = (Graphics2D) graphics;
+            final var frc = graphics2D.getFontRenderContext();
+            String message = "Isaac>Jacob game\nPress space to play!";
+            for (final var line : message.split("\n")) {
+                final var layout = new TextLayout(line, graphics.getFont(), frc);
+                final var bounds = layout.getBounds();
+                final var targetWidth = (float) (width - bounds.getWidth()) / 2;
+                layout.draw(graphics2D, targetWidth, currentHeight);
+                currentHeight += graphics.getFontMetrics().getHeight();
+            }
 
-        graphics.drawImage(player1.getSprite(), (int)player1.getPosX(), (int)player1.getPosY(), null);
-        graphics.setColor(Color.GREEN);
-        graphics.drawRect((int)player1.getPosX(), (int)player1.getPosY()-20,5*player1.getHealth(),10);
-        graphics.drawImage(enemy1.getSprite(), (int)enemy1.getPosX(), (int)enemy1.getPosY(), null);
-        graphics.setColor(Color.RED);
-        graphics.drawRect((int)enemy1.getPosX(), (int)enemy1.getPosY()-20,5*enemy1.getHealth(),10);
-        graphics.drawImage(platform,180,430,null);
-        graphics.drawImage(platform,500,430,null);
+            graphics.drawImage(player1.getSprite(), (int) player1.getPosX(), (int) player1.getPosY(), null);
+            graphics.setColor(Color.GREEN);
+            graphics.drawImage(healthBar.getSubimage(0, 0, (int) (4 * player1.getHealth()), 9), (int) player1.getPosX(), (int) player1.getPosY() - 20, null);
+            graphics.drawImage(healthBar.getSubimage(0, 0, (int) (4 * enemy1.getHealth()), 9), (int) enemy1.getPosX() + 15, (int) player1.getPosY() - 20, null);
+            graphics.drawImage(enemy1.getSprite(), (int) enemy1.getPosX(), (int) enemy1.getPosY(), null);
+            graphics.drawImage(platform, 180, 430, null);
+            graphics.drawImage(platform, 500, 430, null);
+        }
+        catch(RasterFormatException r){
+            System.out.println("game over close all the shit and say who won");
+
+        }
     }
 
     public void onPlatform(){

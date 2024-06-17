@@ -20,7 +20,6 @@ public class Sprite extends Rectangle implements ActionListener {
 
 
 
-
     // 0 = Idle,
     private ArrayList<BufferedImage> spriteSheets = new ArrayList<>();
     private int currentSpriteSheet;
@@ -69,8 +68,8 @@ public class Sprite extends Rectangle implements ActionListener {
         new javax.swing.Timer(70, this).start();
     }
 
-    public void setHealth(int damage){
-        health-=damage;
+    public void setHealth(int health){
+        this.health=health;
 
     }
 

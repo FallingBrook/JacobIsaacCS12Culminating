@@ -15,12 +15,11 @@ public class Client {
 
     private SnakeGame game;
 
-
-
-
     private static final int FRAME_RATE = 20;
     private static final int WIDTH = 800;
     private static final int HEIGHT = 600;
+
+    private boolean gameOver =false;
 
 
 
@@ -33,7 +32,7 @@ public class Client {
 
             final JFrame frame = new JFrame("Jacob is super cool Game");
             frame.setSize(WIDTH, HEIGHT);
-            Client client = new Client(new Socket("172.20.10.2", 2831));
+            Client client = new Client(new Socket("10.88.111.5", 2831));
             client.player = new Sprite(100, 200, 100);
             client.enemy = new Sprite(100, 200, 100);
             client.game = new SnakeGame(WIDTH, HEIGHT, client.player, client.enemy, client);
