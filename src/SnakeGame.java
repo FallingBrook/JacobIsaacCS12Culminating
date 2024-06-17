@@ -74,26 +74,6 @@ public class SnakeGame extends JPanel implements ActionListener {
 
             }
 
-            public boolean directionforPunch(){
-                if(player1.getRight()==1){
-                    if(player1.getPosX()<enemy1.getPosX()){
-                        return true;
-                    }
-                    else{
-                        return false;
-                    }
-
-                }
-                else{
-                    if(player1.getPosX()<enemy1.getPosX()){
-                        return false;
-                    }
-                    else{
-                        return true;
-                    }
-
-                }
-            }
 
             @Override
             public void keyReleased(KeyEvent e) {
@@ -109,6 +89,27 @@ public class SnakeGame extends JPanel implements ActionListener {
         // calls action performed method
         new Timer(1000 / FRAME_RATE, this).start();
 
+    }
+
+    public boolean directionforPunch(){
+        if(player1.getRight()==1){
+            if(player1.getPosX()<enemy1.getPosX()){
+                return true;
+            }
+            else{
+                return false;
+            }
+
+        }
+        else{
+            if(player1.getPosX()<enemy1.getPosX()){
+                return false;
+            }
+            else{
+                return true;
+            }
+
+        }
     }
 
     @Override
@@ -132,7 +133,7 @@ public class SnakeGame extends JPanel implements ActionListener {
             graphics.drawImage(player1.getSprite(), (int) player1.getPosX(), (int) player1.getPosY(), null);
             graphics.setColor(Color.GREEN);
             graphics.drawImage(healthBar.getSubimage(0, 0, (int) (4 * player1.getHealth()), 9), (int) player1.getPosX(), (int) player1.getPosY() - 20, null);
-            graphics.drawImage(healthBar.getSubimage(0, 0, (int) (4 * enemy1.getHealth()), 9), (int) enemy1.getPosX() + 15, (int) player1.getPosY() - 20, null);
+            graphics.drawImage(healthBar.getSubimage(0, 0, (int) (4 * enemy1.getHealth()), 9), (int) enemy1.getPosX() + 15, (int) enemy1.getPosY() - 20, null);
             graphics.drawImage(enemy1.getSprite(), (int) enemy1.getPosX(), (int) enemy1.getPosY(), null);
             graphics.drawImage(platform, 180, 430, null);
             graphics.drawImage(platform, 500, 430, null);

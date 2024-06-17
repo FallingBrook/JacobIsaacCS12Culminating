@@ -3,6 +3,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.io.*;
 import java.net.Socket;
+import java.util.Scanner;
 
 public class Client {
 
@@ -21,18 +22,34 @@ public class Client {
 
     private boolean gameOver =false;
 
+    private JFrame Frame;
+
+
+
+
 
 
     public static void main(String[] args) throws IOException {
         try {
 
-
-
-
-
             final JFrame frame = new JFrame("Jacob is super cool Game");
             frame.setSize(WIDTH, HEIGHT);
             Client client = new Client(new Socket("10.88.111.5", 2831));
+            client.Frame=frame;
+            StartMenu menu = new StartMenu(WIDTH,HEIGHT,client);
+            StartMenu menu1 = new StartMenu(menu);
+
+
+            frame.add(menu);
+            frame.setLocationRelativeTo(null);
+            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            frame.setResizable(false);
+            frame.setVisible(true);
+            frame.pack();
+            menu.run();
+            frame.remove(menu);
+
+
             client.player = new Sprite(100, 200, 100);
             client.enemy = new Sprite(100, 200, 100);
             client.game = new SnakeGame(WIDTH, HEIGHT, client.player, client.enemy, client);
@@ -58,6 +75,27 @@ public class Client {
         } catch (IOException e) {
             closeEverything(socket, dataInputStream, dataOutputStream);
         }
+
+    }
+
+
+
+    public JFrame getFrame(){
+        return Frame;
+    }
+
+    public void readyUp(){
+
+        try {
+            if (socket.isConnected()) {
+                Scanner sc = new Scanner(System.in);
+                int ready = sc.nextInt();
+                dataOutputStream.writeInt(ready);
+            }
+        } catch (IOException e) {
+            closeEverything(socket, dataInputStream, dataOutputStream);
+        }
+
 
     }
 
