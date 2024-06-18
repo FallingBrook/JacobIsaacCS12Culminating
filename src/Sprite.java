@@ -25,8 +25,7 @@ public class Sprite extends Rectangle implements ActionListener {
     private int currentSpriteSheet;
     private Image currentSprite;
     private String currentAnim = "idle";
-
-
+    private int currentAnimInt = 1;
     private int spriteStartInd;
     private int spriteInd;
     private int currentSpriteIndLength;
@@ -55,7 +54,6 @@ public class Sprite extends Rectangle implements ActionListener {
             spriteSheets.add(ImageIO.read(this.getClass().getClassLoader().getResourceAsStream("Punch1.png")));
             spriteSheets.add(ImageIO.read(this.getClass().getClassLoader().getResourceAsStream("Punch2.png")));
             spriteSheets.add(ImageIO.read(this.getClass().getClassLoader().getResourceAsStream("Kick1.png")));
-            System.out.println(spriteSheets.get(3).getWidth());
             currentSpriteSheet = 0;
 //            ChangeAnim("idle");
             UpdateSprite();
@@ -73,9 +71,9 @@ public class Sprite extends Rectangle implements ActionListener {
 
     }
 
-
-
-
+    public String getCurrentAnim(){
+        return currentAnim;
+    }
 
     public int getHealth(){
         return health;
@@ -155,7 +153,31 @@ public class Sprite extends Rectangle implements ActionListener {
                         spriteSheetsCoordinates[spriteInd + spriteStartInd][2],
                         spriteSheetsCoordinates[spriteInd + spriteStartInd][3]);
     }
-
+    public int getAnimNum(){
+        return currentSpriteSheet;
+    }
+    public void ChangeAnimFromServer(double anim){
+        switch ((int) anim){
+            case 0:
+                ChangeAnim("idle");
+                break;
+            case 1:
+                ChangeAnim("walk");
+                break;
+            case 2:
+                ChangeAnim("jump");
+                break;
+            case 3:
+                ChangeAnim("punch2");
+                break;
+            case 4:
+                ChangeAnim("punch1");
+                break;
+            case 5:
+                ChangeAnim("kick1");
+                break;
+        }
+    }
     public void ChangeAnim(String newAnim){
         if(currentAnim.equals(newAnim))
             return;

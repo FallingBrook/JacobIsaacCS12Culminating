@@ -1,9 +1,7 @@
-import javax.imageio.ImageIO;
 import javax.swing.*;
-import java.awt.*;
 import java.io.*;
 import java.net.Socket;
-import java.util.Scanner;
+import java.nio.charset.StandardCharsets;
 
 public class Client {
 
@@ -16,7 +14,7 @@ public class Client {
     private Sprite player;
     private Sprite enemy;
 
-    //main game loop obkect
+    //main game loop object
     private SnakeGame game;
 
 
@@ -24,13 +22,13 @@ public class Client {
     private static final int WIDTH = 800;
     private static final int HEIGHT = 600;
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) {
         try {
 
             //creating all necessary components for the game
             final JFrame frame = new JFrame("Jacob is super cool Game");
             frame.setSize(WIDTH, HEIGHT);
-            Client client = new Client(new Socket("10.88.111.5", 2831));
+            Client client = new Client(new Socket("10.0.0.58", 2831));
             client.player = new Sprite(100, 200, 100);
             client.enemy = new Sprite(100, 200, 100);
             client.game = new SnakeGame(WIDTH, HEIGHT, client.player, client.enemy, client);
@@ -83,6 +81,9 @@ public class Client {
                 dataOutputStream.writeDouble(player.getPosX());
                 dataOutputStream.writeDouble(player.getPosY());
 
+                // write the current animation of the player
+                dataOutputStream.writeDouble(player.getAnimNum());
+                System.out.println(player.getCurrentAnim());
                 //output direction of player
                 if(client.player.getRight()==1) {
                     dataOutputStream.writeDouble(1);
@@ -91,18 +92,19 @@ public class Client {
                     dataOutputStream.writeDouble(2);
                 }
 
-                //ouput health and if they are ready to start the game
+                //output health and if they are ready to start the game
                 dataOutputStream.writeDouble(enemy.getHealth());
                 dataOutputStream.writeDouble(game.getReadyScreen());
                 dataOutputStream.flush();
             }
         } catch (IOException e) {
+            System.out.println(e.getMessage());
             closeEverything(socket, dataInputStream, dataOutputStream);
         }
     }
 
     /**
-     * Recieves messages form the sever and updates the game accordingly
+     * Receives messages form the sever and updates the game accordingly
      * @param game the players game object
      */
 
@@ -113,6 +115,8 @@ public class Client {
                 enemy.setPosX(dataInputStream.readDouble());
                 enemy.setPosY(dataInputStream.readDouble());
 
+                enemy.ChangeAnimFromServer(dataInputStream.readDouble());
+
                 //setting enemy direction and health
                 enemy.setRight(dataInputStream.readDouble());
                 player.setHealth((int)dataInputStream.readDouble());
@@ -120,6 +124,7 @@ public class Client {
                 //letting them know if other client is ready to begin the game
                 game.setOtherReadyScreen((int)dataInputStream.readDouble());
             } catch (IOException e) {
+                System.out.println(e.getMessage());
                 closeEverything(socket, dataInputStream, dataOutputStream);
             }
         }
