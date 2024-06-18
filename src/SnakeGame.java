@@ -68,7 +68,7 @@ public class SnakeGame extends JPanel implements ActionListener {
                     }
                     else {
                         player1.setPosX(700);
-                        enemy1.setRight(2);
+                        player1.setRight(2);
                     }
                 }
 
@@ -164,7 +164,7 @@ public class SnakeGame extends JPanel implements ActionListener {
         super.paintComponent(graphics);
         if (screenType == 0) {
             try {
-                graphics.drawImage(ImageIO.read(this.getClass().getClassLoader().getResourceAsStream("StartScreen.png")), 0, 0, null);
+                graphics.drawImage(ImageIO.read(this.getClass().getClassLoader().getResourceAsStream("start.png")), 0, 0, null);
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
@@ -185,8 +185,8 @@ public class SnakeGame extends JPanel implements ActionListener {
 
 //                graphics.drawImage(healthBar.getSubimage(0, 0, (int) (4 * enemy1.getHealth()), 9), (int) enemy1.getPosX() + 15, (int) enemy1.getPosY() - 20, null);
             graphics.drawImage(enemy1.getSprite(), (int) enemy1.getPosX(), (int) enemy1.getPosY(), null);
-            graphics.drawImage(platform, 180, 430, null);
-            graphics.drawImage(platform, 500, 430, null);
+            graphics.drawImage(platform, 180, 400, null);
+            graphics.drawImage(platform, 500, 400, null);
 //            System.out.println(enemy1.getCurrentAnim());
             if (player1.getHealth() <= 0) {
                 isGameOver = true;
@@ -205,12 +205,20 @@ public class SnakeGame extends JPanel implements ActionListener {
         }
     }
 
+
+
+
+
     public void onPlatform(){
         if(((player1.getPosX()+player1.width/2)>180&&(player1.getPosX()+player1.width/2)<300)||((player1.getPosX()+player1.width/2)>500&&(player1.getPosX()+player1.width/2)<620)){
-            if((player1.getPosY()+player1.height>425&&player1.getPosY()+player1.height<435)&&player1.getSpriteMovement().getVeloY()>=0){
-                player1.setPosY(370);
+            if((player1.getPosY()+player1.height>390&&player1.getPosY()+player1.height<410)&&player1.getSpriteMovement().getVeloY()>=0){
+
+                player1.setPosY(340);
+
                 player1.getSpriteMovement().setVeloY(0);
+
                 player1.getSpriteMovement().setGrounded(true);
+
             }
         }
         else if(player1.getPosY()+ player1.height<530){
@@ -242,6 +250,7 @@ public class SnakeGame extends JPanel implements ActionListener {
         client.sendMessage(client,this);
         client.listenForMessage(this);
 
+        System.out.println(player1.getSpriteMovement().getVeloY());
 
 
         repaint();

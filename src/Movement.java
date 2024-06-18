@@ -13,7 +13,7 @@ public class Movement{
 
     // region jump var
     private boolean canJump;
-    private int jumpSpeed = -20;
+    private int jumpSpeed = -25;
     private double gravityAccel = 2;
     private double maxFallSpeed = 15;
     private boolean isGrounded = false;
