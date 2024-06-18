@@ -195,9 +195,6 @@ public class Sprite extends Rectangle implements ActionListener {
         spriteInd = 0;
     }
 
-    public String getCurrentAnim(){
-        return currentAnim;
-    }
 
     private BufferedImage flipImage(BufferedImage img){
         int width = img.getWidth();
