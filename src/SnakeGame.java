@@ -95,6 +95,7 @@ public class SnakeGame extends JPanel implements ActionListener {
                 else if(e.getKeyCode() == KeyEvent.VK_RIGHT){
                     player1.setRight(1);
                     player1.getSpriteMovement().setDirX(1);
+                    System.out.println("IN");
                     player1.getSpriteMovement().setRightKey(true);
                 }
                 if(e.getKeyCode() == KeyEvent.VK_B && player1.getSpriteMovement().getGrounded()){

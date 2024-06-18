@@ -1,5 +1,6 @@
 import javax.swing.*;
 import java.io.*;
+import java.net.InetAddress;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 
@@ -25,7 +26,7 @@ public class Client {
             //creating all necessary components for the game
             final JFrame frame = new JFrame("Sim Brown Showdown");
             frame.setSize(WIDTH, HEIGHT);
-            Client client = new Client(new Socket("10.88.111.5", 2831));
+            Client client = new Client(new Socket(InetAddress.getLocalHost(), 2831));
             client.player = new Sprite(100, 200, 100);
             client.enemy = new Sprite(700, 200, 100);
             client.game = new SnakeGame(WIDTH, HEIGHT, client.player, client.enemy, client);
@@ -47,9 +48,6 @@ public class Client {
      * Constructor for client class
      * @param socket the socket to be used on the client side of the communication with the network
      */
-
-
-
     public Client(Socket socket) {
         try {
             this.socket = socket;

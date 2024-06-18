@@ -83,7 +83,9 @@ public class Sprite extends Rectangle implements ActionListener {
     }
 
 
-
+    /** set the heath of the player
+     * @param health new health of the player
+     */
     public void setHealth(int health){
         Random rd = new Random();
         if(this.health != health && rd.nextInt(0, 10) > 5 && health > 0){
@@ -94,9 +96,6 @@ public class Sprite extends Rectangle implements ActionListener {
                 ChangeAnim("hit2");
             isHit = true;
         }
-
-
-        if(this.health!=health)
         if(!isBlocking)
             this.health=health;
 
@@ -181,6 +180,9 @@ public class Sprite extends Rectangle implements ActionListener {
         isBlocking = x;
     }
 
+    /**
+     * Handle sprite physics
+     */
     public void SpritePhysics(){
         if(isHit || (movement.getGrounded() && isBlocking))
             return;
@@ -188,6 +190,9 @@ public class Sprite extends Rectangle implements ActionListener {
         movement.DetAnim();
     }
 
+    /**
+     * Update the current sprite
+     */
     public void UpdateSprite(){
         spriteInd++;
         if(spriteInd > currentSpriteIndLength){
@@ -199,6 +204,7 @@ public class Sprite extends Rectangle implements ActionListener {
             movement.setAttacking(false);
             isHit = false;
         }
+        // if player is looking right
         if(right==1) {
             currentSprite=spriteSheets.get(currentSpriteSheet).getSubimage(spriteSheetsCoordinates[spriteInd + spriteStartInd][0],
                     spriteSheetsCoordinates[spriteInd + spriteStartInd][1],
@@ -289,11 +295,17 @@ public class Sprite extends Rectangle implements ActionListener {
                 break;
         }
     }
+
+    /** change the animation of the player
+     * @param newAnim new animation of the player
+     */
     public void ChangeAnim(String newAnim){
         if(currentAnim.equals(newAnim))
             return;
+
         if(currentAnim.equals("block"))
             isBlocking = false;
+
         currentAnim = newAnim;
         switch (currentAnim){
             case "idle":
