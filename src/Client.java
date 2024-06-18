@@ -83,7 +83,6 @@ public class Client {
 
                 // write the current animation of the player
                 dataOutputStream.writeDouble(player.getAnimNum());
-                System.out.println(player.getCurrentAnim());
                 //output direction of player
                 if(client.player.getRight()==1) {
                     dataOutputStream.writeDouble(1);

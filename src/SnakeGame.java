@@ -152,9 +152,15 @@ public class SnakeGame extends JPanel implements ActionListener {
             else {
                 graphics.drawImage(background,0,0,null);
                 graphics.drawImage(player1.getSprite(), (int) player1.getPosX(), (int) player1.getPosY(), null);
-                graphics.setColor(Color.GREEN);
-                graphics.drawImage(healthBar.getSubimage(0, 0, (int) (4 * player1.getHealth()), 9), (int) player1.getPosX(), (int) player1.getPosY() - 20, null);
-                graphics.drawImage(healthBar.getSubimage(0, 0, (int) (4 * enemy1.getHealth()), 9), (int) enemy1.getPosX() + 15, (int) enemy1.getPosY() - 20, null);
+                try {
+                    graphics.drawImage(ImageIO.read(this.getClass().getClassLoader().getResourceAsStream("HealthBarUI.png")), 50, 20, null);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+                graphics.setColor(Color.RED);
+                graphics.fillRect(52, 33, 31 * player1.getHealth() - 1, 19);
+                graphics.fillRect(439, 33, 31 * enemy1.getHealth() - 1, 19);
+//                graphics.drawImage(healthBar.getSubimage(0, 0, (int) (4 * enemy1.getHealth()), 9), (int) enemy1.getPosX() + 15, (int) enemy1.getPosY() - 20, null);
                 graphics.drawImage(enemy1.getSprite(), (int) enemy1.getPosX(), (int) enemy1.getPosY(), null);
                 graphics.drawImage(platform, 180, 430, null);
                 graphics.drawImage(platform, 500, 430, null);
