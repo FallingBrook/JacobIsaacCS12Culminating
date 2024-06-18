@@ -10,19 +10,14 @@ public class Client {
     private DataOutputStream dataOutputStream;
     private DataInputStream dataInputStream;
 
-    //player and enemy
     private Sprite player;
     private Sprite enemy;
 
-    //main game loop object
     private SnakeGame game;
 
-
-    //size of window
     private static final int WIDTH = 800;
     private static final int HEIGHT = 600;
 
-    public int whichPlayer;
 
     public static void main(String[] args) {
         try {
@@ -130,6 +125,12 @@ public class Client {
         }
     }
 
+    /**
+     * Closes all server components
+     * @param socket socket to be closed
+     * @param dataInputStream data input stream to be closed
+     * @param dataOutputStream data output stream to be closed
+     */
 
     public void closeEverything(Socket socket, DataInputStream dataInputStream, DataOutputStream dataOutputStream) {
         try {

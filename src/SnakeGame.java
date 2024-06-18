@@ -20,12 +20,9 @@ public class SnakeGame extends JPanel implements ActionListener {
 
     private Image background = ImageIO.read(this.getClass().getClassLoader().getResourceAsStream("background2.png"));
 
-    private Image winScreen =  ImageIO.read(this.getClass().getClassLoader().getResourceAsStream("Win.png"));
     private Image KO =  ImageIO.read(this.getClass().getClassLoader().getResourceAsStream("KO.png"));
 
-    private Image loseScreen =  ImageIO.read(this.getClass().getClassLoader().getResourceAsStream("Lose.png"));
     private BufferedImage playerIcons  =  ImageIO.read(this.getClass().getClassLoader().getResourceAsStream("PlayerIcons.png"));
-
 
     private Sprite player1;
     private Sprite enemy1;
@@ -40,6 +37,16 @@ public class SnakeGame extends JPanel implements ActionListener {
 
     private boolean isGameOver = false;
 
+    /**
+     * Snake game constructor
+     * @param width width of panel
+     * @param height height of panel
+     * @param player player sprite
+     * @param enemy enemy sprite
+     * @param client client running the game
+     * @throws IOException
+     */
+
     public SnakeGame(final int width, final int height, Sprite player, Sprite enemy, Client client) throws IOException {
         super();
         this.width = width;
@@ -52,11 +59,18 @@ public class SnakeGame extends JPanel implements ActionListener {
     }
 
 
+    /**
+     * Starts the game
+     */
     public void startGame(){
+
+        //window setup
         setFocusable(true);
         setFocusTraversalKeysEnabled(false);
         requestFocusInWindow();
         addKeyListener(new KeyAdapter() {
+
+            //key events
             @Override
             public void keyPressed(KeyEvent e) {
 
@@ -85,7 +99,7 @@ public class SnakeGame extends JPanel implements ActionListener {
                 }
                 if(e.getKeyCode() == KeyEvent.VK_B && player1.getSpriteMovement().getGrounded()){
                     player1.setBlock(true);
-                    System.out.println("EYEYE");
+
                     player1.ChangeAnim("block");
                 }
 
@@ -115,29 +129,38 @@ public class SnakeGame extends JPanel implements ActionListener {
                     player1.getSpriteMovement().setRightKey(false);
                 }
                 if(e.getKeyCode() == KeyEvent.VK_B){
-                    System.out.println("CUm");
                     player1.setBlock(false);
                 }
             }
         });
 
+        //timer that calls action performed
+
         new Timer(1000 / FRAME_RATE, this).start();
 
     }
 
-
+    /**
+     * gets the players ready status
+     * @return the status
+     */
     public int getReadyScreen(){
         return readyScreen;
     }
 
+
+    /**
+     * gets the other players ready status
+     * @return the status
+     */
     public void setOtherReadyScreen(int r){
         otherReadyScreen=r;
     }
 
-    public void setScreenType(int screenType){
-        this.screenType = screenType;
-    }
-
+    /**
+     * Checks if the player is facing the right direction to execute a punch
+     * @return true or false if they can punch
+     */
     public boolean directionforPunch(){
         if(player1.getRight()==1){
             if(player1.getPosX()<enemy1.getPosX()){
@@ -159,18 +182,26 @@ public class SnakeGame extends JPanel implements ActionListener {
         }
     }
 
+
+    /**
+     * paints the screen
+     * @param graphics the <code>Graphics</code> object to protect
+     */
     @Override
     protected void paintComponent(Graphics graphics) {
         super.paintComponent(graphics);
+        //starting screen
         if (screenType == 0) {
             try {
                 graphics.drawImage(ImageIO.read(this.getClass().getClassLoader().getResourceAsStream("start.png")), 0, 0, null);
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
+            //main game
         } else {
             graphics.drawImage(background, 0, 0, null);
             graphics.drawImage(player1.getSprite(), (int) player1.getPosX(), (int) player1.getPosY(), null);
+            graphics.drawImage(enemy1.getSprite(), (int) enemy1.getPosX(), (int) enemy1.getPosY(), null);
 
             // draw health bar
             graphics.drawImage(healthBar, 50, 20, null);
@@ -183,11 +214,12 @@ public class SnakeGame extends JPanel implements ActionListener {
             graphics.drawImage(playerIcons.getSubimage(0, 0, 100, 100), 700, 0, null);
 
 
-//                graphics.drawImage(healthBar.getSubimage(0, 0, (int) (4 * enemy1.getHealth()), 9), (int) enemy1.getPosX() + 15, (int) enemy1.getPosY() - 20, null);
-            graphics.drawImage(enemy1.getSprite(), (int) enemy1.getPosX(), (int) enemy1.getPosY(), null);
+
             graphics.drawImage(platform, 180, 400, null);
             graphics.drawImage(platform, 500, 400, null);
-//            System.out.println(enemy1.getCurrentAnim());
+
+            //win loss state
+
             if (player1.getHealth() <= 0) {
                 isGameOver = true;
                 player1.ChangeAnim("death");
@@ -197,7 +229,6 @@ public class SnakeGame extends JPanel implements ActionListener {
                 isGameOver = true;
                 enemy1.ChangeAnim("death");
                 player1.ChangeAnim("victory");
-//                graphics.drawImage(winScreen, 0, 0, null);
             }
             if (isGameOver) {
                 graphics.drawImage(KO, 50, 180, null);
@@ -206,10 +237,11 @@ public class SnakeGame extends JPanel implements ActionListener {
     }
 
 
-
-
-
+    /**
+     * Checks if the player is on the platform
+     */
     public void onPlatform(){
+        //if on platform set height
         if(((player1.getPosX()+player1.width/2)>180&&(player1.getPosX()+player1.width/2)<300)||((player1.getPosX()+player1.width/2)>500&&(player1.getPosX()+player1.width/2)<620)){
             if((player1.getPosY()+player1.height>390&&player1.getPosY()+player1.height<410)&&player1.getSpriteMovement().getVeloY()>=0){
 
@@ -225,6 +257,11 @@ public class SnakeGame extends JPanel implements ActionListener {
             player1.getSpriteMovement().setGrounded(false);
         }
     }
+
+    /**
+     * checks if players are touching each other
+     * @return boolean for if they are touching
+     */
 
     public boolean checkCollision(){
         if(player1.intersects(enemy1)){
@@ -249,9 +286,6 @@ public class SnakeGame extends JPanel implements ActionListener {
         }
         client.sendMessage(client,this);
         client.listenForMessage(this);
-
-        System.out.println(player1.getSpriteMovement().getVeloY());
-
 
         repaint();
 

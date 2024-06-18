@@ -9,6 +9,11 @@ public class ClientHandler implements Runnable {
     private DataOutputStream dataOutputStream;
     private DataInputStream dataInputStream;
 
+    /**
+     * ClientHandler constructor
+     * @param socket socket to be used
+     */
+
     public ClientHandler(Socket socket) {
         try {
             this.socket = socket;
@@ -19,6 +24,10 @@ public class ClientHandler implements Runnable {
             closeEverything(socket, dataInputStream, dataOutputStream);
         }
     }
+
+    /**
+     * Loop that is continually sending messages across the server
+     */
 
     @Override
     public void run() {
@@ -33,6 +42,11 @@ public class ClientHandler implements Runnable {
         }
     }
 
+    /**
+     * Brodcasts the mesaage to other clients
+     * @param messageToSend the number to be sent
+     */
+
     public void broadcastMessage(double messageToSend) {
         for (ClientHandler clientHandler : clientHandlers) {
             try {
@@ -46,9 +60,19 @@ public class ClientHandler implements Runnable {
         }
     }
 
+    /**
+     * removes the instance from the static arraylist
+     */
     public void removeClientHandler() {
         clientHandlers.remove(this);
     }
+
+    /**
+     * Closes all server components
+     * @param socket socket to be closed
+     * @param dataInputStream data input stream to be closed
+     * @param dataOutputStream data output stream to be closed
+     */
 
     public void closeEverything(Socket socket, DataInputStream dataInputStream, DataOutputStream dataOutputStream) {
         removeClientHandler();

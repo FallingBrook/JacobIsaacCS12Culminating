@@ -8,22 +8,14 @@ import java.util.Random;
 
 public class Sprite extends Rectangle implements ActionListener {
 
-
-
     private int size;
-
     private double right=1;
-
     private int health=10;
 
-
-
-    // 0 = Idle,
     private ArrayList<BufferedImage> spriteSheets = new ArrayList<>();
     private int currentSpriteSheet;
     private Image currentSprite;
     private String currentAnim = "idle";
-    private int currentAnimInt = 1;
     private int spriteStartInd;
     private int spriteInd;
     private int currentSpriteIndLength;
@@ -46,16 +38,24 @@ public class Sprite extends Rectangle implements ActionListener {
             {0, 0, 70, 100}};
     private Movement movement;
 
+
+    /**
+     * Sprite constructor
+     * @param x position of sprite
+     * @param y position of sprite
+     * @param size size of sprite
+     */
+
     public Sprite(int x, int y, int size){
         this.x = x;
         this.y = y;
         this.height = 100;
         this.width = 70;
         this.size = size;
-
         movement = new Movement(this);
 
         try {
+            //add all animations to spriteSheet array list
             spriteSheets = new ArrayList<BufferedImage>();
             spriteSheets.add(ImageIO.read(this.getClass().getClassLoader().getResourceAsStream("Idle.png")));
             spriteSheets.add(ImageIO.read(this.getClass().getClassLoader().getResourceAsStream("Walk.png")));
@@ -72,7 +72,6 @@ public class Sprite extends Rectangle implements ActionListener {
             spriteSheets.add(ImageIO.read(this.getClass().getClassLoader().getResourceAsStream("Victory.png")));
             spriteSheets.add(ImageIO.read(this.getClass().getClassLoader().getResourceAsStream("Block.png")));
             currentSpriteSheet = 0;
-//            ChangeAnim("idle");
             UpdateSprite();
         }
         catch (Exception e){
@@ -82,6 +81,8 @@ public class Sprite extends Rectangle implements ActionListener {
         // calls action performed method
         new javax.swing.Timer(100, this).start();
     }
+
+
 
     public void setHealth(int health){
         Random rd = new Random();
@@ -93,7 +94,8 @@ public class Sprite extends Rectangle implements ActionListener {
                 ChangeAnim("hit2");
             isHit = true;
         }
-//        System.out.println(isBlocking);
+
+
         if(this.health!=health)
             System.out.println(isBlocking);
         if(!isBlocking)
@@ -101,44 +103,81 @@ public class Sprite extends Rectangle implements ActionListener {
 
     }
 
-    public String getCurrentAnim(){
-        return currentAnim;
-    }
-
+    /**
+     * gets the health of the sprite
+     * @return the health
+     */
     public int getHealth(){
         return health;
     }
+
+    /**
+     * gets the size of the sprite
+     * @return the size
+     */
 
     public int getSize2(){
         return size;
     }
 
+    /**
+     * gets the current sprite image
+     * @return the image
+     */
+
     public Image getSprite(){
-
-
         return currentSprite;
     }
 
+
+    /**
+     * gets the x position of the sprite
+     * @return the x position
+     */
 
     public double getPosX(){
         return x;
     }
 
+    /**
+     * gets the Y position of the sprite
+     * @return the Y position
+     */
+
     public double getPosY(){
         return y;
     }
 
+    /**
+     * gets the sprites movement object
+     * @return the movement object
+     */
     public Movement getSpriteMovement(){
         return movement;
     }
+
+    /**
+     * Sets the x position of the sprite
+     * @param x  x position to be set
+     */
 
     public void setPosX (double x){
         this.x=(int)x;
     }
 
+    /**
+     * Sets the Y position of the sprite
+     * @param y y position to be set
+     */
+
     public void setPosY (double y){
         this.y=(int)y;
     }
+
+    /**
+     * Sets if the sprite is blocking or not
+     * @param x boolean for the block
+     */
     public void setBlock(boolean x){
         isBlocking = x;
     }
@@ -173,15 +212,27 @@ public class Sprite extends Rectangle implements ActionListener {
         }
     }
 
-
+    /**
+     * Sets the direction the sprite is facing
+     * @param d direction
+     */
     public void setRight(double d){
         right = d;
 
     }
 
+    /**
+     * gets the direction the sprite is facing
+     * @return teh direction
+     */
+
     public double getRight(){
         return right;
     }
+
+    /**
+     * Sets the current sprite image equal to the same image flipped across the y axis
+     */
 
     public void getImageFlip(){
         BufferedImage temp = flipImage(spriteSheets.get(currentSpriteSheet));
@@ -190,6 +241,11 @@ public class Sprite extends Rectangle implements ActionListener {
                         spriteSheetsCoordinates[spriteInd + spriteStartInd][2],
                         spriteSheetsCoordinates[spriteInd + spriteStartInd][3]);
     }
+
+    /**
+     * gets current sprite sheet
+     * @return index current sprite sheet
+     */
     public int getAnimNum(){
         return currentSpriteSheet;
     }
@@ -230,12 +286,8 @@ public class Sprite extends Rectangle implements ActionListener {
                 break;
             case 13:
                 ChangeAnim("block");
-                System.out.println("YEA");
                 isBlocking = true;
                 break;
-//            case 12:
-//                ChangeAnim("victory");
-//                break;
         }
     }
     public void ChangeAnim(String newAnim){
@@ -319,7 +371,11 @@ public class Sprite extends Rectangle implements ActionListener {
         spriteInd = 0;
     }
 
-
+    /**
+     * flips the image
+     * @param img image to be flipped
+     * @return teh flipped image
+     */
     private BufferedImage flipImage(BufferedImage img){
         int width = img.getWidth();
         int height = img.getHeight();
@@ -331,7 +387,10 @@ public class Sprite extends Rectangle implements ActionListener {
     }
 
 
-
+    /**
+     * updates the sprite
+     * @param e the event to be processed
+     */
     @Override
     public void actionPerformed(ActionEvent e) {
         UpdateSprite();
