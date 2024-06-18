@@ -97,7 +97,6 @@ public class Sprite extends Rectangle implements ActionListener {
 
 
         if(this.health!=health)
-            System.out.println(isBlocking);
         if(!isBlocking)
             this.health=health;
 
