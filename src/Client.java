@@ -22,6 +22,8 @@ public class Client {
     private static final int WIDTH = 800;
     private static final int HEIGHT = 600;
 
+    public int whichPlayer;
+
     public static void main(String[] args) {
         try {
 
@@ -30,9 +32,8 @@ public class Client {
             frame.setSize(WIDTH, HEIGHT);
             Client client = new Client(new Socket("10.0.0.58", 2831));
             client.player = new Sprite(100, 200, 100);
-            client.enemy = new Sprite(100, 200, 100);
+            client.enemy = new Sprite(700, 200, 100);
             client.game = new SnakeGame(WIDTH, HEIGHT, client.player, client.enemy, client);
-
             //more window setup + start game
             frame.add(client.game);
             frame.setLocationRelativeTo(null);

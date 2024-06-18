@@ -13,7 +13,7 @@ public class Movement{
 
     // region jump var
     private boolean canJump;
-    private int jumpSpeed = -29;
+    private int jumpSpeed = -20;
     private double gravityAccel = 2;
     private double maxFallSpeed = 15;
     private boolean isGrounded = false;
@@ -69,9 +69,9 @@ public class Movement{
     }
 
     public void UpdateMovement(){
-        if (player.getPosY() > 600 - player.getSize2()){
+        if (player.getPosY() > 530 - player.getSize2()){
             isGrounded = true;
-            player.setPosY(600-player.getSize2());
+            player.setPosY(530-player.getSize2());
         }
         JumpPhysics();
         HorizontalMovement(dir);
@@ -105,7 +105,26 @@ public class Movement{
     public void DetAnim(){
         comboCldwnCounter-=0.02;
         if(!isGrounded){
-            player.ChangeAnim("jump");
+            if(isAttacking){
+                if(!attack){
+                    return;
+                }
+                if(attackNum > maxCombo || comboCldwnCounter <= 0)
+                    attackNum = 1;
+                if(attackNum == 1)
+                    player.ChangeAnim("airpunch1");
+                else if(attackNum == 2 && comboCldwnCounter > 0)
+                    player.ChangeAnim("airkick1");
+                else if(attackNum == 3 && comboCldwnCounter > 0)
+                    player.ChangeAnim("airkick2");
+                comboCldwnCounter = comboCldwn;
+                attackNum++;
+                attack = false;
+            }
+            else{
+                player.ChangeAnim("jump");
+            }
+
         }
         else if(isAttacking) {
             if(!attack)

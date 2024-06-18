@@ -16,17 +16,19 @@ public class SnakeGame extends JPanel implements ActionListener {
 
     private Image platform = ImageIO.read(this.getClass().getClassLoader().getResourceAsStream("platform.png"));
 
-    private BufferedImage healthBar = ImageIO.read(this.getClass().getClassLoader().getResourceAsStream("healthBar.png"));
+    private Image healthBar = ImageIO.read(this.getClass().getClassLoader().getResourceAsStream("HealthBarUI.png"));
 
     private Image background = ImageIO.read(this.getClass().getClassLoader().getResourceAsStream("background2.png"));
 
     private Image winScreen =  ImageIO.read(this.getClass().getClassLoader().getResourceAsStream("Win.png"));
+    private Image KO =  ImageIO.read(this.getClass().getClassLoader().getResourceAsStream("KO.png"));
 
     private Image loseScreen =  ImageIO.read(this.getClass().getClassLoader().getResourceAsStream("Lose.png"));
+    private BufferedImage playerIcons  =  ImageIO.read(this.getClass().getClassLoader().getResourceAsStream("PlayerIcons.png"));
 
 
-    private Sprite player1 = new Sprite(50,50, 100);
-    private Sprite enemy1 = new Sprite(50,50, 100);
+    private Sprite player1;
+    private Sprite enemy1;
 
     private int otherReadyScreen;
 
@@ -35,6 +37,8 @@ public class SnakeGame extends JPanel implements ActionListener {
     Client client;
 
     private int screenType = 0;
+
+    private boolean isGameOver = false;
 
     public SnakeGame(final int width, final int height, Sprite player, Sprite enemy, Client client) throws IOException {
         super();
@@ -57,7 +61,15 @@ public class SnakeGame extends JPanel implements ActionListener {
             public void keyPressed(KeyEvent e) {
 
                 if(e.getKeyCode()==KeyEvent.VK_R){
-                        readyScreen = 1;
+                    readyScreen = 1;
+                    if(otherReadyScreen==0){
+                        enemy1.setPosX(700);
+                        enemy1.setRight(2);
+                    }
+                    else {
+                        player1.setPosX(700);
+                        enemy1.setRight(2);
+                    }
                 }
 
                 if(e.getKeyCode() == KeyEvent.VK_LEFT){
@@ -140,41 +152,47 @@ public class SnakeGame extends JPanel implements ActionListener {
 
     @Override
     protected void paintComponent(Graphics graphics) {
-        try {
-            super.paintComponent(graphics);
-            if(screenType == 0){
-                try {
-                    graphics.drawImage(ImageIO.read(this.getClass().getClassLoader().getResourceAsStream("StartScreen.png")), 0, 0, null);
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
+        super.paintComponent(graphics);
+        if (screenType == 0) {
+            try {
+                graphics.drawImage(ImageIO.read(this.getClass().getClassLoader().getResourceAsStream("StartScreen.png")), 0, 0, null);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
             }
-            else {
-                graphics.drawImage(background,0,0,null);
-                graphics.drawImage(player1.getSprite(), (int) player1.getPosX(), (int) player1.getPosY(), null);
-                try {
-                    graphics.drawImage(ImageIO.read(this.getClass().getClassLoader().getResourceAsStream("HealthBarUI.png")), 50, 20, null);
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-                graphics.setColor(Color.RED);
-                graphics.fillRect(52, 33, 31 * player1.getHealth() - 1, 19);
-                graphics.fillRect(439, 33, 31 * enemy1.getHealth() - 1, 19);
+        } else {
+            graphics.drawImage(background, 0, 0, null);
+            graphics.drawImage(player1.getSprite(), (int) player1.getPosX(), (int) player1.getPosY(), null);
+
+            // draw health bar
+            graphics.drawImage(healthBar, 50, 20, null);
+            graphics.setColor(Color.RED);
+            graphics.fillRect(52, 33, 31 * player1.getHealth() - 1, 19);
+            graphics.fillRect(439, 33, 31 * enemy1.getHealth() - 1, 19);
+
+            // draw player icons
+            graphics.drawImage(playerIcons.getSubimage(100, 0, 100, 100), 0, 0, null);
+            graphics.drawImage(playerIcons.getSubimage(0, 0, 100, 100), 700, 0, null);
+
+
 //                graphics.drawImage(healthBar.getSubimage(0, 0, (int) (4 * enemy1.getHealth()), 9), (int) enemy1.getPosX() + 15, (int) enemy1.getPosY() - 20, null);
-                graphics.drawImage(enemy1.getSprite(), (int) enemy1.getPosX(), (int) enemy1.getPosY(), null);
-                graphics.drawImage(platform, 180, 430, null);
-                graphics.drawImage(platform, 500, 430, null);
+            graphics.drawImage(enemy1.getSprite(), (int) enemy1.getPosX(), (int) enemy1.getPosY(), null);
+            graphics.drawImage(platform, 180, 430, null);
+            graphics.drawImage(platform, 500, 430, null);
+//            System.out.println(enemy1.getCurrentAnim());
+            if (player1.getHealth() <= 0) {
+                isGameOver = true;
+                player1.ChangeAnim("death");
+                enemy1.ChangeAnim("victory");
             }
-        }
-        catch(RasterFormatException r){
-            if (player1.getHealth()>0){
-                graphics.drawImage(winScreen,0,0,null);
+            else if (enemy1.getHealth() <= 0) {
+                isGameOver = true;
+                enemy1.ChangeAnim("death");
+                player1.ChangeAnim("victory");
+//                graphics.drawImage(winScreen, 0, 0, null);
             }
-            else{
-                graphics.drawImage(loseScreen,0,0,null);
-
+            if (isGameOver) {
+                graphics.drawImage(KO, 50, 180, null);
             }
-
         }
     }
 
@@ -186,7 +204,7 @@ public class SnakeGame extends JPanel implements ActionListener {
                 player1.getSpriteMovement().setGrounded(true);
             }
         }
-        else if(player1.getPosY()+ player1.height<600){
+        else if(player1.getPosY()+ player1.height<530){
             player1.getSpriteMovement().setGrounded(false);
         }
     }
@@ -204,13 +222,16 @@ public class SnakeGame extends JPanel implements ActionListener {
     @Override
     public void actionPerformed(final ActionEvent e) {
 
-        if(readyScreen==1&&otherReadyScreen==1){
-            screenType=1;
+        if(!isGameOver){
+
+            if(readyScreen==1&&otherReadyScreen==1){
+                screenType=1;
+            }
+            player1.SpritePhysics();
+            onPlatform();
         }
         client.sendMessage(client,this);
         client.listenForMessage(this);
-        player1.SpritePhysics();
-        onPlatform();
 
 
 
