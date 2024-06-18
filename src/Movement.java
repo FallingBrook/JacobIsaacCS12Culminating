@@ -67,6 +67,9 @@ public class Movement{
         veloY=y;
 
     }
+    public boolean getGrounded(){
+        return isGrounded;
+    }
 
     public void UpdateMovement(){
         if (player.getPosY() > 530 - player.getSize2()){

@@ -83,6 +83,11 @@ public class SnakeGame extends JPanel implements ActionListener {
                     player1.getSpriteMovement().setDirX(1);
                     player1.getSpriteMovement().setRightKey(true);
                 }
+                if(e.getKeyCode() == KeyEvent.VK_B && player1.getSpriteMovement().getGrounded()){
+                    player1.setBlock(true);
+                    System.out.println("EYEYE");
+                    player1.ChangeAnim("block");
+                }
 
                 if(e.getKeyCode() == KeyEvent.VK_SPACE && player1.getSpriteMovement().canPJump()){
                     player1.getSpriteMovement().startJump();
@@ -108,6 +113,10 @@ public class SnakeGame extends JPanel implements ActionListener {
                 }
                 else if(e.getKeyCode() == KeyEvent.VK_RIGHT){
                     player1.getSpriteMovement().setRightKey(false);
+                }
+                if(e.getKeyCode() == KeyEvent.VK_B){
+                    System.out.println("CUm");
+                    player1.setBlock(false);
                 }
             }
         });

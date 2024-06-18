@@ -28,6 +28,7 @@ public class Sprite extends Rectangle implements ActionListener {
     private int spriteInd;
     private int currentSpriteIndLength;
 
+    private boolean isBlocking = false;
     private boolean isHit = false;
     private final int[][] spriteSheetsCoordinates = {{0, 0, 70, 100}, {70, 0, 70, 100}, {0, 100, 70, 100}, {70, 100, 70, 100},
             {0, 0, 70, 100}, {70, 0, 70, 100}, {140, 0, 70, 100}, {210, 0, 70, 100}, {280, 0, 70, 100},
@@ -41,7 +42,8 @@ public class Sprite extends Rectangle implements ActionListener {
             {0, 0, 70, 100}, {70, 0, 70, 100}, {140, 0, 70, 100}, {210, 0, 70, 100},
             {0, 0, 70, 100}, {70, 0, 70, 100}, {140, 0, 70, 100}, {210, 0, 70, 100},
             {0, 0, 100, 100}, {100, 0, 100, 100}, {200, 0, 100, 100}, {300, 0, 100, 100},
-            {0, 0, 70, 180}, {70, 0, 70, 180}, {140, 0, 70, 180}};
+            {0, 0, 70, 180}, {70, 0, 70, 180}, {140, 0, 70, 180},
+            {0, 0, 70, 100}};
     private Movement movement;
 
     public Sprite(int x, int y, int size){
@@ -68,6 +70,7 @@ public class Sprite extends Rectangle implements ActionListener {
             spriteSheets.add(ImageIO.read(this.getClass().getClassLoader().getResourceAsStream("Hit2.png")));
             spriteSheets.add(ImageIO.read(this.getClass().getClassLoader().getResourceAsStream("Death.png")));
             spriteSheets.add(ImageIO.read(this.getClass().getClassLoader().getResourceAsStream("Victory.png")));
+            spriteSheets.add(ImageIO.read(this.getClass().getClassLoader().getResourceAsStream("Block.png")));
             currentSpriteSheet = 0;
 //            ChangeAnim("idle");
             UpdateSprite();
@@ -90,8 +93,11 @@ public class Sprite extends Rectangle implements ActionListener {
                 ChangeAnim("hit2");
             isHit = true;
         }
-
-        this.health=health;
+//        System.out.println(isBlocking);
+        if(this.health!=health)
+            System.out.println(isBlocking);
+        if(!isBlocking)
+            this.health=health;
 
     }
 
@@ -133,9 +139,12 @@ public class Sprite extends Rectangle implements ActionListener {
     public void setPosY (double y){
         this.y=(int)y;
     }
+    public void setBlock(boolean x){
+        isBlocking = x;
+    }
 
     public void SpritePhysics(){
-        if(isHit)
+        if(isHit || (movement.getGrounded() && isBlocking))
             return;
         movement.UpdateMovement();
         movement.DetAnim();
@@ -219,9 +228,11 @@ public class Sprite extends Rectangle implements ActionListener {
             case 10:
                 ChangeAnim("hit2");
                 break;
-//            case 11:
-//                ChangeAnim("death");
-//                break;
+            case 13:
+                ChangeAnim("block");
+                System.out.println("YEA");
+                isBlocking = true;
+                break;
 //            case 12:
 //                ChangeAnim("victory");
 //                break;
@@ -230,6 +241,8 @@ public class Sprite extends Rectangle implements ActionListener {
     public void ChangeAnim(String newAnim){
         if(currentAnim.equals(newAnim))
             return;
+        if(currentAnim.equals("block"))
+            isBlocking = false;
         currentAnim = newAnim;
         switch (currentAnim){
             case "idle":
@@ -296,6 +309,11 @@ public class Sprite extends Rectangle implements ActionListener {
                 currentSpriteSheet = 12;
                 currentSpriteIndLength = 2;
                 spriteStartInd = 45;
+                break;
+            case "block":
+                currentSpriteSheet = 13;
+                currentSpriteIndLength = 0;
+                spriteStartInd = 48;
                 break;
         }
         spriteInd = 0;
