@@ -1,7 +1,5 @@
-import java.awt.event.ActionEvent;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.nio.file.Paths;
+// Movement Class
+// A class that handles all the player movement
 
 public class Movement{
     // region movement variables

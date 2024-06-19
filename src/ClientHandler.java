@@ -1,3 +1,6 @@
+// ClientHandler Class
+// A class that handles the client to server and server to client communications
+
 import java.io.*;
 import java.net.Socket;
 import java.util.ArrayList;

@@ -1,3 +1,6 @@
+// Server Class
+// A class that handles the server of the game
+
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;

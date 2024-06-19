@@ -1,3 +1,6 @@
+// Sprite Class
+// A class that handles all the player sprite related functions
+
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.event.ActionEvent;

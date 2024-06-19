@@ -1,14 +1,16 @@
+// Punch Man Game
+// A multiplayer brawler game
+// Jacob Brown and Isaac Simmie
+// June 18, 2024
+
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.awt.font.TextLayout;
 import java.awt.image.BufferedImage;
-import java.awt.image.RasterFormatException;
 import java.io.IOException;
-import java.util.ArrayList;
 
-public class SnakeGame extends JPanel implements ActionListener {
+public class PunchManGame extends JPanel implements ActionListener {
 
     private final int width;
     private final int height;
@@ -47,7 +49,7 @@ public class SnakeGame extends JPanel implements ActionListener {
      * @throws IOException
      */
 
-    public SnakeGame(final int width, final int height, Sprite player, Sprite enemy, Client client) throws IOException {
+    public PunchManGame(final int width, final int height, Sprite player, Sprite enemy, Client client) throws IOException {
         super();
         this.width = width;
         this.height = height;

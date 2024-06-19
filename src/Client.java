@@ -1,8 +1,10 @@
+// Client Class
+// Handles all the client functions
+
 import javax.swing.*;
 import java.io.*;
 import java.net.InetAddress;
 import java.net.Socket;
-import java.nio.charset.StandardCharsets;
 
 public class Client {
 
@@ -14,7 +16,7 @@ public class Client {
     private Sprite player;
     private Sprite enemy;
 
-    private SnakeGame game;
+    private PunchManGame game;
 
     private static final int WIDTH = 800;
     private static final int HEIGHT = 600;
@@ -29,7 +31,7 @@ public class Client {
             Client client = new Client(new Socket(InetAddress.getLocalHost(), 2831));
             client.player = new Sprite(100, 200, 100);
             client.enemy = new Sprite(700, 200, 100);
-            client.game = new SnakeGame(WIDTH, HEIGHT, client.player, client.enemy, client);
+            client.game = new PunchManGame(WIDTH, HEIGHT, client.player, client.enemy, client);
             //more window setup + start game
             frame.add(client.game);
             frame.setLocationRelativeTo(null);
@@ -67,7 +69,7 @@ public class Client {
      */
 
 
-    public void sendMessage(Client client,SnakeGame game) {
+    public void sendMessage(Client client, PunchManGame game) {
 
         try {
             if (socket.isConnected()) {
@@ -101,7 +103,7 @@ public class Client {
      * @param game the players game object
      */
 
-    public void listenForMessage(SnakeGame game) {
+    public void listenForMessage(PunchManGame game) {
         if (socket.isConnected()) {
             try {
                 //setting position of enemy
